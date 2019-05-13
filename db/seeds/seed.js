@@ -3,8 +3,8 @@
 
 const {
   topicsData,
-  articlesData,
   usersData,
+  articlesData,
   commentsData
 } = require("../data");
 
