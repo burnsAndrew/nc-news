@@ -7,4 +7,21 @@ const createRef = (input, paramOne, paramTwo) => {
   return result;
 };
 
-module.exports = { createRef };
+const renameKeys = (input, keyToChange, newKey) => {
+  return input.map(element => {
+    const newObj = {};
+
+    Object.keys(element).forEach(key => {
+      const value = element[key];
+
+      if (key === keyToChange) {
+        newObj[newKey] = value;
+      } else {
+        newObj[key] = value;
+      }
+    });
+    return newObj;
+  });
+};
+
+module.exports = { createRef, renameKeys };
