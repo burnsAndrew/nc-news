@@ -16,5 +16,10 @@ exports.seed = (connection, Promise) => {
       return connection("topics")
         .insert(topicsData)
         .returning("*");
+    })
+    .then(() => {
+      return connection("users")
+        .insert(usersData)
+        .returning("*");
     });
 };
