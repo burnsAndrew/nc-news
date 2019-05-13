@@ -1,3 +1,7 @@
+const dateConverter = () => {
+  return {};
+};
+
 const createRef = (input, paramOne, paramTwo) => {
   const result = {};
 
@@ -24,4 +28,4 @@ const renameKeys = (input, keyToChange, newKey) => {
   });
 };
 
-module.exports = { createRef, renameKeys };
+module.exports = { dateConverter, createRef, renameKeys };

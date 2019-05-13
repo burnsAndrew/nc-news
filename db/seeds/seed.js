@@ -21,5 +21,11 @@ exports.seed = (connection, Promise) => {
       return connection("users")
         .insert(usersData)
         .returning("*");
+    })
+    .then(() => {
+      // need to convert the date!!
+      return connection("articles")
+        .insert(articlesData)
+        .returning("*");
     });
 };
