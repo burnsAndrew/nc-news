@@ -1,4 +1,9 @@
-const { dateConverter, renameKeys } = require("../../utils/data-handler");
+const {
+  dateConverter,
+  renameKeys,
+  createRef,
+  formatData
+} = require("../../utils/data-handler");
 
 const {
   topicsData,
@@ -22,16 +27,22 @@ exports.seed = (connection, Promise) => {
         .returning("*");
     })
     .then(() => {
-      const formattedDate = dateConverter(articlesData);
+      const formattedArticles = dateConverter(articlesData);
       return connection("articles")
-        .insert(formattedDate)
+        .insert(formattedArticles)
         .returning("*");
     })
-    .then(() => {
-      const formatAuthor = renameKeys(commentsData, "created_by", "author");
-      // use my util funcs here
+    .then(articleRows => {
+      const formattedDateOfComments = dateConverter(commentsData);
+      const formatAuthor = renameKeys(
+        formattedDateOfComments,
+        "created_by",
+        "author"
+      );
+      const refLookUp = createRef(articleRows, "article_id", "title");
+      const updatedCommentsData = formatData(formatAuthor, refLookUp);
       return connection("comments")
-        .insert(formatAuthor)
+        .insert(updatedCommentsData)
         .returning("*");
     });
 };

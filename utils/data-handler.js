@@ -37,7 +37,7 @@ const formatData = (data, lookup) => {
   return data.map(element => {
     let newObj = {};
     Object.keys(element).forEach(key => {
-      const value = data[key];
+      const value = element[key];
 
       if (key === "belongs_to") {
         newObj["article_id"] = lookup[element.belongs_to];

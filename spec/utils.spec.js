@@ -182,26 +182,75 @@ describe("formatData", () => {
     expect(actual).to.not.equal(input);
   });
   it("given a single element array, return the single element with updated information in an array", () => {
-    const input = [{ belongs_to: "Living in the shadow of a great man" }];
+    const input = [
+      {
+        body:
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        belongs_to: "Living in the shadow of a great man",
+        created_by: "butter_bridge",
+        votes: 14,
+        created_at: 1479818163389
+      }
+    ];
     const lookup = {
       "Living in the shadow of a great man": 1
     };
     const actual = formatData(input, lookup);
-    const expected = [{ article_id: 1 }];
+    const expected = [
+      {
+        body:
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        article_id: 1,
+        created_by: "butter_bridge",
+        votes: 14,
+        created_at: 1479818163389
+      }
+    ];
     expect(actual).to.eql(expected);
     expect(actual).to.not.equal(input);
   });
   it("given an array, return the array with updated information in an array", () => {
     const input = [
-      { belongs_to: "Living in the shadow of a great man" },
-      { belongs_to: "They're not exactly dogs, are they?" }
+      {
+        body:
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        belongs_to: "Living in the shadow of a great man",
+        created_by: "butter_bridge",
+        votes: 14,
+        created_at: 1479818163389
+      },
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389
+      }
     ];
     const lookup = {
       "Living in the shadow of a great man": 1,
       "They're not exactly dogs, are they?": 2
     };
     const actual = formatData(input, lookup);
-    const expected = [{ article_id: 1 }, { article_id: 2 }];
+    const expected = [
+      {
+        body:
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        article_id: 1,
+        created_by: "butter_bridge",
+        votes: 14,
+        created_at: 1479818163389
+      },
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_id: 2,
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389
+      }
+    ];
     expect(actual).to.eql(expected);
     expect(actual).to.not.equal(input);
   });
