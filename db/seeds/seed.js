@@ -1,5 +1,4 @@
-// const { } = require("../../utils")
-// this will be for when I use a reference object and a function to format the data
+const { dateConverter } = require("../../utils/data-handler");
 
 const {
   topicsData,
@@ -23,9 +22,9 @@ exports.seed = (connection, Promise) => {
         .returning("*");
     })
     .then(() => {
-      // need to convert the date!!
+      const formattedDate = dateConverter(articlesData);
       return connection("articles")
-        .insert(articlesData)
+        .insert(formattedDate)
         .returning("*");
     });
 };

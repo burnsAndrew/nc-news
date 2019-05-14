@@ -1,5 +1,10 @@
-const dateConverter = () => {
-  return {};
+const dateConverter = input => {
+  if (input.length === 0) return [];
+  else
+    return input.map(date => {
+      date.created_at = new Date(date.created_at).toDateString();
+      return date;
+    });
 };
 
 const createRef = (input, paramOne, paramTwo) => {
@@ -28,4 +33,20 @@ const renameKeys = (input, keyToChange, newKey) => {
   });
 };
 
-module.exports = { dateConverter, createRef, renameKeys };
+const formatData = (data, refLookup) => {
+  return data.map(element => {
+    let newObj = {};
+    Object.keys(element).forEach(key => {
+      const value = data[key];
+
+      if (key === "example") {
+        newObj["otherExample"] = refLookup[data.example];
+      } else {
+        newObj[key] = value;
+      }
+    });
+    return newObj;
+  });
+};
+
+module.exports = { dateConverter, createRef, renameKeys, formatData };
