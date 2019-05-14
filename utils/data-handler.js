@@ -33,14 +33,14 @@ const renameKeys = (input, keyToChange, newKey) => {
   });
 };
 
-const formatData = (data, refLookup) => {
+const formatData = (data, lookup) => {
   return data.map(element => {
     let newObj = {};
     Object.keys(element).forEach(key => {
       const value = data[key];
 
-      if (key === "example") {
-        newObj["otherExample"] = refLookup[data.example];
+      if (key === "belongs_to") {
+        newObj["article_id"] = lookup[element.belongs_to];
       } else {
         newObj[key] = value;
       }

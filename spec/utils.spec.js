@@ -83,29 +83,126 @@ describe("dateConverter", () => {
   });
 });
 
-describe.only("createRef", () => {
+describe("createRef", () => {
   it("given an empty array return empty object", () => {
     const input = [];
-    const actual = createRef(input);
+    const actual = createRef(input, "article_id", "title");
     const expected = {};
     expect(actual).to.eql(expected);
   });
-});
-
-xdescribe("renameKeys", () => {
-  it("given an empty array return empty object", () => {
-    const input = [];
-    const actual = renameKeys(input);
-    const expected = {};
-    expect(actual).to.eql(expected);
+  it("given an array with a single element, return an object with a new key value pair", () => {
+    const input = [
+      { article_id: 1, title: "Living in the shadow of a great man" }
+    ];
+    const actual = createRef(input, "article_id", "title");
+    const expected = { 1: "Living in the shadow of a great man" };
+    expect(actual).eql(expected);
+  });
+  it("given an array with multiple elements, return an object with new key value pairs", () => {
+    const input = [
+      { article_id: 1, title: "Living in the shadow of a great man" },
+      { article_id: 2, title: "Sony Vaio; or, The Laptop" }
+    ];
+    const actual = createRef(input, "article_id", "title");
+    const expected = {
+      1: "Living in the shadow of a great man",
+      2: "Sony Vaio; or, The Laptop"
+    };
+    expect(actual).eql(expected);
   });
 });
 
-xdescribe("formatData", () => {
+describe("renameKeys", () => {
+  it("given an empty array return empty array", () => {
+    const input = [];
+    const keyToChange = "";
+    const newKey = "";
+    const actual = renameKeys(input, keyToChange, newKey);
+    const expected = [];
+    expect(actual).to.eql(expected);
+    expect(actual).to.not.equal(input);
+  });
+  it("given an single element, return a new array with an updated key", () => {
+    const input = [{ created_by: "butter_bridge" }];
+    const keyToChange = "created_by";
+    const newKey = "author";
+    const actual = renameKeys(input, keyToChange, newKey);
+    const expected = [{ author: "butter_bridge" }];
+    expect(actual).to.eql(expected);
+    expect(actual).to.not.equal(input);
+  });
+  it("given multiple elements, return a new array with an updated keys", () => {
+    const input = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16
+      },
+      {
+        body:
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        belongs_to: "Living in the shadow of a great man",
+        created_by: "butter_bridge",
+        votes: 14
+      }
+    ];
+    const keyToChange = "created_by";
+    const newKey = "author";
+    const actual = renameKeys(input, keyToChange, newKey);
+    const expected = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        author: "butter_bridge",
+        votes: 16
+      },
+      {
+        body:
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        belongs_to: "Living in the shadow of a great man",
+        author: "butter_bridge",
+        votes: 14
+      }
+    ];
+    expect(actual).to.eql(expected);
+    expect(actual).to.not.equal(input);
+  });
+});
+
+describe("formatData", () => {
   it("given an empty array return empty object", () => {
     const input = [];
-    const actual = formatData(input);
-    const expected = {};
+    const lookup = {};
+    const actual = formatData(input, lookup);
+    const expected = [];
     expect(actual).to.eql(expected);
+    expect(actual).to.not.equal(input);
+  });
+  it("given a single element array, return the single element with updated information in an array", () => {
+    const input = [{ belongs_to: "Living in the shadow of a great man" }];
+    const lookup = {
+      "Living in the shadow of a great man": 1
+    };
+    const actual = formatData(input, lookup);
+    const expected = [{ article_id: 1 }];
+    expect(actual).to.eql(expected);
+    expect(actual).to.not.equal(input);
+  });
+  it("given an array, return the array with updated information in an array", () => {
+    const input = [
+      { belongs_to: "Living in the shadow of a great man" },
+      { belongs_to: "They're not exactly dogs, are they?" }
+    ];
+    const lookup = {
+      "Living in the shadow of a great man": 1,
+      "They're not exactly dogs, are they?": 2
+    };
+    const actual = formatData(input, lookup);
+    const expected = [{ article_id: 1 }, { article_id: 2 }];
+    expect(actual).to.eql(expected);
+    expect(actual).to.not.equal(input);
   });
 });
