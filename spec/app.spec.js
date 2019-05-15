@@ -6,17 +6,93 @@ const request = require("supertest");
 const app = require("../app");
 const connection = require("../db/connection");
 
+const chai = require("chai");
+const chaiSorted = require("chai-sorted");
+chai.use(chaiSorted);
+
 describe.only("/", () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
 
   describe("/api", () => {
-    it("GET status:200", () => {
+    it("GET status:200 and an 'ok: true' response", () => {
       return request(app)
         .get("/api")
         .expect(200)
         .then(({ body }) => {
-          expect(body.ok).to.equal(true);
+          expect(body.ok).to.eql(true);
+        });
+    });
+  });
+  describe("/api/topics", () => {
+    it("GET status:200 and respond with an array of topic objects, each with slug and description properties", () => {
+      return request(app)
+        .get("/api/topics")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).to.eql({
+            topics: [
+              {
+                description: "The man, the Mitch, the legend",
+                slug: "mitch"
+              },
+              {
+                description: "Not dogs",
+                slug: "cats"
+              },
+              {
+                description: "what books are made of",
+                slug: "paper"
+              }
+            ]
+          });
+        });
+    });
+  });
+
+  describe("/api/articles", () => {
+    it("GET status:200 and respond with an array of articles objects, with specific properties", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(res => {
+          expect(res.body.articles[0]).to.contain.keys(
+            "author",
+            "title",
+            "article_id",
+            "topic",
+            "created_at",
+            "votes"
+          );
+          expect(res.body.articles[0].author).to.be.a("string");
+        });
+    });
+    it("GET status:200 and respond with articles sorted by date as default", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(res => {
+          expect(res.body.articles).to.be.sortedBy("created_at");
+        });
+    });
+    it("GET status:200 and respond with articles sorted by author in ascending order", () => {
+      return request(app)
+        .get("/api/articles?sort_by=author")
+        .expect(200)
+        .then(res => {
+          expect(res.body.articles).to.be.sortedBy("author", {
+            ascending: true
+          });
+        });
+    });
+    xit("GET status:200 and respond with articles that can be set to ascending or descending order, defaulted to descending order", () => {
+      return request(app)
+        .get("/api/articles?order=desc")
+        .expect(200)
+        .then(res => {
+          expect(res.body.articles).to.be.sortedBy("title", {
+            ascending: false
+          });
         });
     });
   });
