@@ -132,11 +132,26 @@ describe.only("/", () => {
         });
     });
   });
-  xdescribe("/articles/:article_id", () => {
-    it("x", () => {
+
+  describe.only("/articles/:article_id", () => {
+    it("GET status 200 and respond with an article object with the appropriate properties", () => {
       return request(app)
-        .delete("/api/articles/:article_id")
-        .expect(200);
+        .get("/api/articles/3")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).to.eql([
+            {
+              author: "icellusedkars",
+              title: "Eight pug gifs that remind me of mitch",
+              article_id: 3,
+              body: "some gifs",
+              topic: "mitch",
+              created_at: "2010-11-17T00:00:00.000Z",
+              votes: 0,
+              comment_count: "0"
+            }
+          ]);
+        });
     });
   });
 });

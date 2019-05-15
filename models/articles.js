@@ -27,3 +27,21 @@ exports.selectArticles = ({
       if (topic) query.where("articles.topic", "=", topic);
     });
 };
+
+exports.selectArticlesById = article_id => {
+  return connection
+    .select(
+      "articles.author",
+      "articles.title",
+      "articles.article_id",
+      "articles.body",
+      "articles.topic",
+      "articles.created_at",
+      "articles.votes"
+    )
+    .from("articles")
+    .leftJoin("comments", "articles.article_id", "comments.article_id")
+    .count("comment_id AS comment_count")
+    .groupBy("articles.article_id")
+    .where("articles.article_id", "=", article_id);
+};
