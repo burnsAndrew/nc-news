@@ -65,35 +65,78 @@ describe.only("/", () => {
             "votes"
           );
           expect(res.body.articles[0].author).to.be.a("string");
+          expect(res.body.articles[0].author).to.equal("butter_bridge");
+          expect(res.body.articles[0].title).to.equal(
+            "Living in the shadow of a great man"
+          );
         });
     });
-    it("GET status:200 and respond with articles sorted by date as default", () => {
+    it("GET status:200 and respond with an array of articles objects, with the property 'comment_count'", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
         .then(res => {
-          expect(res.body.articles).to.be.sortedBy("created_at");
+          expect(res.body.articles[0]).to.contain.keys("comment_count");
+        });
+    });
+    it("GET status:200 and respond with articles sorted by date as default", () => {
+      return request(app)
+        .get("/api/articles?sort_by=created_at&order=desc")
+        .expect(200)
+        .then(res => {
+          expect(res.body.articles).to.be.descendingBy("created_at", {
+            ascending: false
+          });
         });
     });
     it("GET status:200 and respond with articles sorted by author in ascending order", () => {
       return request(app)
-        .get("/api/articles?sort_by=author")
+        .get("/api/articles?sort_by=author&order=asc")
         .expect(200)
         .then(res => {
-          expect(res.body.articles).to.be.sortedBy("author", {
+          expect(res.body.articles).to.be.ascendingBy("author", {
             ascending: true
           });
         });
     });
-    xit("GET status:200 and respond with articles that can be set to ascending or descending order, defaulted to descending order", () => {
+    it("GET status:200 and respond with articles that can be set to ascending or descending order, defaulted to descending order", () => {
       return request(app)
-        .get("/api/articles?order=desc")
+        .get("/api/articles?sort_by=author&order=desc")
         .expect(200)
         .then(res => {
-          expect(res.body.articles).to.be.sortedBy("title", {
-            ascending: false
+          expect(res.body.articles).to.be.descendingBy("author", {
+            descending: true
           });
         });
+    });
+    it("GET status:200 and respond with articles filtered by author", () => {
+      return request(app)
+        .get("/api/articles?author=butter_bridge")
+        .expect(200)
+        .then(res => {
+          const allByAuthor = res.body.articles.every(article => {
+            return article.author === "butter_bridge";
+          });
+          expect(allByAuthor).to.be.true;
+        });
+    });
+    it("GET status:200 and respond with articles filtered by topic", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(res => {
+          const allByTopic = res.body.articles.every(article => {
+            return article.topic === "mitch";
+          });
+          expect(allByTopic).to.be.true;
+        });
+    });
+  });
+  xdescribe("/articles/:article_id", () => {
+    it("x", () => {
+      return request(app)
+        .delete("/api/articles/:article_id")
+        .expect(200);
     });
   });
 });
