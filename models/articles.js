@@ -45,3 +45,5 @@ exports.selectArticlesById = article_id => {
     .groupBy("articles.article_id")
     .where("articles.article_id", "=", article_id);
 };
+
+exports.selectCommentsByArticleId = () => {};

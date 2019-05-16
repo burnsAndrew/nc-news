@@ -23,7 +23,18 @@ describe.only("/", () => {
           expect(body.ok).to.eql(true);
         });
     });
+    describe("/not_a_route", () => {
+      it("ANY status:404 - responds with a 'Route Not Found' error", () => {
+        return request(app)
+          .get("/not_a_route")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).to.eql("Route Not Found");
+          });
+      });
+    });
   });
+
   describe("/api/topics", () => {
     it("GET status:200 and respond with an array of topic objects, each with slug and description properties", () => {
       return request(app)
@@ -46,6 +57,22 @@ describe.only("/", () => {
               }
             ]
           });
+        });
+    });
+    it("/topics status 404 responds with 'Topic does not exist'", () => {
+      return request(app)
+        .get("/api/topics/not_a_topic")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Topic does not exist");
+        });
+    });
+    it("/topics status 400 responds with 'Invalid Format'", () => {
+      return request(app)
+        .get("/api/topics/1")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Invalid Format");
         });
     });
   });
@@ -133,7 +160,7 @@ describe.only("/", () => {
     });
   });
 
-  describe.only("/articles/:article_id", () => {
+  describe("/articles/:article_id", () => {
     it("GET status 200 and respond with an article object with the appropriate properties", () => {
       return request(app)
         .get("/api/articles/3")
@@ -151,43 +178,119 @@ describe.only("/", () => {
               comment_count: "0"
             }
           ]);
+          expect(article[0]).to.contain.key("author");
+          expect(article[0]).to.contain.key("article_id");
+        });
+    });
+    xit("PATCH status 200 and respond with an updated article ", () => {
+      const newVote = 1;
+      const voteIncrementer = { inc_votes: newVote };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(voteIncrementer)
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article[0].votes).to.equal(1);
         });
     });
   });
-});
 
-//Example of a delete request test from the lecture (deleting house 1 in this case)
-xdescribe("/api", () => {
-  beforeEach(() => connection.seed.run());
-  after(() => connection.destroy());
-
-  describe("/houses", () => {
-    it("DELETE /:house_id - status: 204 - deletes the specified house", () => {
+  describe("/articles/:article_id/comments", () => {
+    it("GET status 200 and respond with an array of comments", () => {
       return request(app)
-        .delete("/api/houses/1")
-        .expect(204);
+        .get("/api/articles/:article_id/comments")
+        .expect(200)
+        .then(res => {
+          expect(res.body.comments[0]).to.contain.keys(
+            "comment_id",
+            "votes",
+            "created_at",
+            "author",
+            "body"
+          );
+          expect(res.body.comments[0].author).to.be.a("string");
+        });
+    });
+    xit("GET status:200 and respond with articles sorted by date as default", () => {
+      return request(app)
+        .get("/api/articles/:article_id/comments?sort_by=created_at&order=desc")
+        .expect(200)
+        .then(res => {
+          expect(res.body.comments).to.be.descendingBy("created_at", {
+            ascending: false
+          });
+        });
+    });
+    xit("GET status:200 and respond with articles sorted by author in ascending order", () => {
+      return request(app)
+        .get("/api/articles/:article_id/comments?sort_by=author&order=asc")
+        .expect(200)
+        .then(res => {
+          expect(res.body.comments).to.be.ascendingBy("author", {
+            ascending: true
+          });
+        });
+    });
+    xit("POST status 200 and responds with a successfully posted comment", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .expect(200)
+        .then();
+      //continue
     });
   });
-  // example of where a delete request is a bad request
-  xdescribe("/houses", () => {
-    it("DELETE /:house_id - status: 400 - responds with bad request!", () => {
+
+  describe("/comments/:comment_id", () => {
+    xit("PATCH status 200 and responds with a successfully updated comment", () => {
+      const newVote = 1;
+      const voteIncrementer = { inc_votes: newVote };
       return request(app)
-        .delete("/api/houses/invalid_id_format")
+        .patch("/api/comments/1")
+        .send(voteIncrementer)
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments[0].votes).to.equal(1);
+          expect().to.eql();
+        });
+    });
+    xit("DELETE status 204 and responds with no content, as it has been successfully deleted", () => {
+      return request(app)
+        .delete("/comments/")
+        .expect(204)
+        .then();
+      //continue
+    });
+    xit("DELETE /:comment_id - status: 400 - responds with 'Invalid ID format'", () => {
+      return request(app)
+        .delete("/api/comments/invalid_id_format")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Bad request!");
+          expect(body.msg).to.equal("Invalid ID format");
+        });
+    });
+    xit("DELETE /:comment_id - status: 404 - responds with 'Comment does not exist'", () => {
+      return request(app)
+        .delete("/api/comments/9999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Comment does not exist");
         });
     });
   });
-  //example of an attempt to delete a house that does not exist
-  xdescribe("/houses", () => {
-    it("DELETE /:house_id - status: 404 - responds with bad request, house does not exist!", () => {
+
+  xdescribe("/users/:username", () => {
+    it("GET status 200 and responds with a user object", () => {
       return request(app)
-        .delete("/api/houses/9999")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).to.equal("House does not exist!");
-        });
+        .get("/users/butter_bridge")
+        .expect(200)
+        .then(({ body: { user } }) =>
+          expect(user[0]).to.eql({
+            username: "butter_bridge",
+            name: "jonny",
+            avatar_url:
+              "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+          })
+        );
     });
   });
 });
@@ -196,18 +299,6 @@ xdescribe("/api", () => {
 xdescribe("/api", () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
-
-  xdescribe("/not_a_route", () => {
-    it("ANY status:404 - responds with a route not found error", () => {
-      return request(app)
-        .get("/not_a_route")
-        .expect(404)
-        .then(({ body }) => {
-          console.log(body); // prints an empty object initially, but when the app.use is added to app.js, it'll work and then can remove the console log
-          expect(body.msg).to.eql("Route not found!");
-        });
-    });
-  });
 
   // 405 example
   xdescribe("/houses", () => {
