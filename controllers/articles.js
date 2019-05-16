@@ -1,6 +1,7 @@
 const {
   selectArticles,
   selectArticlesById,
+  patchArticleVoteScore,
   selectCommentsByArticleId
 } = require("../models/articles");
 
@@ -12,29 +13,27 @@ exports.sendArticles = (req, res, next) => {
 
 exports.sendArticlesById = (req, res, next) => {
   const { article_id } = req.params;
-  selectArticlesById(article_id).then(article =>
-    res.status(200).send({ article })
-  );
+  selectArticlesById(article_id)
+    .then(article => res.status(200).send({ article }))
+    .catch(next);
 };
 
 exports.sendCommentsByArticleId = (req, res, next) => {
-  selectCommentsByArticleId().then(comments =>
-    res.status(200).send({ comments })
-  );
+  selectCommentsByArticleId()
+    .then(comments => res.status(200).send({ comments }))
+    .catch(next);
 };
 
-exports.updateArticleVoteScore = (req, res, next) => {};
-
-exports.sendComment = (req, res, next) => {
-  selectComment().then(comment => res.status(200).send({ comment }));
-};
-
-exports.sendCommentsByArticleId = (req, res, next) => {
-  selectCommentsByArticleId().then(comments =>
-    res.status(200).send({ comments })
-  );
+exports.updateArticleVoteScore = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+  patchArticleVoteScore(article_id, inc_votes)
+    .then(([article]) => res.status(200).send({ article }))
+    .catch(next);
 };
 
 exports.sendComment = (req, res, next) => {
-  selectComment().then(comment => res.status(200).send({ comment }));
+  selectComment()
+    .then(comment => res.status(201).send({ comment }))
+    .catch(next);
 };

@@ -6,15 +6,18 @@ const {
   sendCommentsByArticleId,
   sendComment
 } = require("../controllers/articles");
+const { methodNotAllowed } = require("../errors/index");
 
 articlesRouter.route("/").get(sendArticles);
 articlesRouter
   .route("/:article_id")
   .get(sendArticlesById)
-  .patch(updateArticleVoteScore);
+  .patch(updateArticleVoteScore)
+  .all(methodNotAllowed);
 articlesRouter
   .route("/:article_id/comments")
   .get(sendCommentsByArticleId)
-  .post(sendComment);
+  .post(sendComment)
+  .all(methodNotAllowed);
 
 module.exports = articlesRouter;

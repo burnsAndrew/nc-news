@@ -1,5 +1,14 @@
 const connection = require("../db/connection");
 
-exports.amendCommentVoteScore = () => {};
+exports.amendCommentVoteScore = (comment_id, inc_votes) => {
+  return connection("comments")
+    .where("comment_id", "=", comment_id)
+    .increment("votes", inc_votes)
+    .returning("*");
+};
 
-exports.deleteCommentByCommentId = () => {};
+exports.deleteCommentByCommentId = comment_id => {
+  return connection("comments")
+    .where("comment_id", "=", comment_id)
+    .del();
+};

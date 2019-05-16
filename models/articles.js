@@ -46,4 +46,11 @@ exports.selectArticlesById = article_id => {
     .where("articles.article_id", "=", article_id);
 };
 
+exports.patchArticleVoteScore = (article_id, inc_votes) => {
+  return connection("articles")
+    .where("article_id", "=", article_id)
+    .increment("votes", inc_votes)
+    .returning("*");
+};
+
 exports.selectCommentsByArticleId = () => {};

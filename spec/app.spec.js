@@ -59,20 +59,12 @@ describe.only("/", () => {
           });
         });
     });
-    it("/topics status 404 responds with 'Topic does not exist'", () => {
+    xit("invalid method status 405", () => {
       return request(app)
-        .get("/api/topics/not_a_topic")
-        .expect(404)
+        .put("/api/topics/invalid_method")
+        .expect(405)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Topic does not exist");
-        });
-    });
-    it("/topics status 400 responds with 'Invalid Format'", () => {
-      return request(app)
-        .get("/api/topics/1")
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).to.equal("Invalid Format");
+          expect(body.msg).to.equal("Method Not Allowed");
         });
     });
   });
@@ -182,15 +174,39 @@ describe.only("/", () => {
           expect(article[0]).to.contain.key("article_id");
         });
     });
-    xit("PATCH status 200 and respond with an updated article ", () => {
+    xit("/articles status 404 responds with 'Article does not exist'", () => {
+      return request(app)
+        .get("/api/articles/not_an_article")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Article does not exist");
+        });
+    });
+    xit("/articles status 400 responds with 'Invalid Format'", () => {
+      return request(app)
+        .get("/api/articles/abc")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Invalid Format");
+        });
+    });
+    it("PATCH status 200 and respond with an updated article ", () => {
       const newVote = 1;
       const voteIncrementer = { inc_votes: newVote };
       return request(app)
         .patch("/api/articles/1")
         .send(voteIncrementer)
         .expect(200)
-        .then(({ body: { article } }) => {
-          expect(article[0].votes).to.equal(1);
+        .then(res => {
+          expect(res.body.article).to.eql({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            body: "I find this existence challenging",
+            votes: 101,
+            topic: "mitch",
+            author: "butter_bridge",
+            created_at: "2018-11-15T00:00:00.000Z"
+          });
         });
     });
   });
@@ -198,17 +214,17 @@ describe.only("/", () => {
   describe("/articles/:article_id/comments", () => {
     it("GET status 200 and respond with an array of comments", () => {
       return request(app)
-        .get("/api/articles/:article_id/comments")
+        .get("/api/articles/1/comments")
         .expect(200)
-        .then(res => {
-          expect(res.body.comments[0]).to.contain.keys(
+        .then(({ body: { comments } }) => {
+          expect(comments[0]).to.contain.keys(
             "comment_id",
             "votes",
             "created_at",
             "author",
             "body"
           );
-          expect(res.body.comments[0].author).to.be.a("string");
+          expect(comments[0].author).to.be.a("string");
         });
     });
     xit("GET status:200 and respond with articles sorted by date as default", () => {
@@ -240,25 +256,30 @@ describe.only("/", () => {
     });
   });
 
-  describe("/comments/:comment_id", () => {
-    xit("PATCH status 200 and responds with a successfully updated comment", () => {
+  describe.only("/comments/:comment_id", () => {
+    it("PATCH status 200 and responds with a successfully updated comment", () => {
       const newVote = 1;
       const voteIncrementer = { inc_votes: newVote };
       return request(app)
         .patch("/api/comments/1")
         .send(voteIncrementer)
         .expect(200)
-        .then(({ body: { comments } }) => {
-          expect(comments[0].votes).to.equal(1);
-          expect().to.eql();
+        .then(res => {
+          expect(res.body.comment).to.eql({
+            comment_id: 1,
+            author: "butter_bridge",
+            article_id: null,
+            votes: 17,
+            created_at: "2017-11-22T00:00:00.000Z",
+            body:
+              "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+          });
         });
     });
-    xit("DELETE status 204 and responds with no content, as it has been successfully deleted", () => {
+    it("DELETE status 204 and responds with no content, as it has been successfully deleted", () => {
       return request(app)
-        .delete("/comments/")
-        .expect(204)
-        .then();
-      //continue
+        .delete("/api/comments/1")
+        .expect(204);
     });
     xit("DELETE /:comment_id - status: 400 - responds with 'Invalid ID format'", () => {
       return request(app)
@@ -323,4 +344,21 @@ xdescribe("/api", () => {
         });
     });
   });
+});
+//potentially usable tests for later?
+xit("/topics status 404 responds with 'Topic does not exist'", () => {
+  return request(app)
+    .get("/api/topics/not_a_topic")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).to.equal("Topic does not exist");
+    });
+});
+xit("/topics status 400 responds with 'Invalid Format'", () => {
+  return request(app)
+    .get("/api/topics/1")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).to.equal("Invalid Format");
+    });
 });
