@@ -14,12 +14,13 @@ exports.sendArticles = (req, res, next) => {
 exports.sendArticlesById = (req, res, next) => {
   const { article_id } = req.params;
   selectArticlesById(article_id)
-    .then(article => res.status(200).send({ article }))
+    .then(([article]) => res.status(200).send({ article }))
     .catch(next);
 };
 
 exports.sendCommentsByArticleId = (req, res, next) => {
-  selectCommentsByArticleId()
+  const { article_id } = req.params;
+  selectCommentsByArticleId(article_id)
     .then(comments => res.status(200).send({ comments }))
     .catch(next);
 };

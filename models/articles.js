@@ -53,4 +53,15 @@ exports.patchArticleVoteScore = (article_id, inc_votes) => {
     .returning("*");
 };
 
-exports.selectCommentsByArticleId = () => {};
+exports.selectCommentsByArticleId = article_id => {
+  //need to have a think about this bit
+  return connection
+    .select(
+      "comments.comment_id",
+      "comments.votes",
+      "comments.created_at",
+      "comments.author",
+      "comments.body"
+    )
+    .from("");
+};

@@ -23,10 +23,10 @@ describe.only("/", () => {
           expect(body.ok).to.eql(true);
         });
     });
-    describe("/not_a_route", () => {
+    xdescribe("/not_a_route", () => {
       it("ANY status:404 - responds with a 'Route Not Found' error", () => {
         return request(app)
-          .get("/not_a_route")
+          .get("/api/not_a_route")
           .expect(404)
           .then(({ body }) => {
             expect(body.msg).to.eql("Route Not Found");
@@ -157,21 +157,19 @@ describe.only("/", () => {
       return request(app)
         .get("/api/articles/3")
         .expect(200)
-        .then(({ body: { article } }) => {
-          expect(article).to.eql([
-            {
-              author: "icellusedkars",
-              title: "Eight pug gifs that remind me of mitch",
-              article_id: 3,
-              body: "some gifs",
-              topic: "mitch",
-              created_at: "2010-11-17T00:00:00.000Z",
-              votes: 0,
-              comment_count: "0"
-            }
-          ]);
-          expect(article[0]).to.contain.key("author");
-          expect(article[0]).to.contain.key("article_id");
+        .then(res => {
+          expect(res.body.article).to.eql({
+            author: "icellusedkars",
+            title: "Eight pug gifs that remind me of mitch",
+            article_id: 3,
+            body: "some gifs",
+            topic: "mitch",
+            created_at: "2010-11-17T00:00:00.000Z",
+            votes: 0,
+            comment_count: "0"
+          });
+          expect(res.body.article).to.contain.key("author");
+          expect(res.body.article).to.contain.key("article_id");
         });
     });
     xit("/articles status 404 responds with 'Article does not exist'", () => {
@@ -211,20 +209,20 @@ describe.only("/", () => {
     });
   });
 
-  describe("/articles/:article_id/comments", () => {
+  describe.only("/articles/:article_id/comments", () => {
     it("GET status 200 and respond with an array of comments", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
-        .then(({ body: { comments } }) => {
-          expect(comments[0]).to.contain.keys(
+        .then(res => {
+          expect(res.body.article.comments).to.contain.keys(
             "comment_id",
             "votes",
             "created_at",
             "author",
             "body"
           );
-          expect(comments[0].author).to.be.a("string");
+          expect(res.body.article.author).to.be.a("string");
         });
     });
     xit("GET status:200 and respond with articles sorted by date as default", () => {
@@ -256,7 +254,7 @@ describe.only("/", () => {
     });
   });
 
-  describe.only("/comments/:comment_id", () => {
+  describe("/comments/:comment_id", () => {
     it("PATCH status 200 and responds with a successfully updated comment", () => {
       const newVote = 1;
       const voteIncrementer = { inc_votes: newVote };
@@ -299,66 +297,66 @@ describe.only("/", () => {
     });
   });
 
-  xdescribe("/users/:username", () => {
+  describe("/users/:username", () => {
     it("GET status 200 and responds with a user object", () => {
       return request(app)
-        .get("/users/butter_bridge")
+        .get("/api/users/butter_bridge")
         .expect(200)
-        .then(({ body: { user } }) =>
-          expect(user[0]).to.eql({
+        .then(res => {
+          expect(res.body.user).to.eql({
             username: "butter_bridge",
             name: "jonny",
             avatar_url:
               "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
-          })
-        );
+          });
+        });
     });
   });
 });
 
 //example of error handling by Tom
-xdescribe("/api", () => {
-  beforeEach(() => connection.seed.run());
-  after(() => connection.destroy());
+// xdescribe("/api", () => {
+//   beforeEach(() => connection.seed.run());
+//   after(() => connection.destroy());
 
-  // 405 example
-  xdescribe("/houses", () => {
-    it("ALL status:405 - responds with a method not allowed error", () => {
-      return request(app)
-        .put("/api/houses/1")
-        .expect(405)
-        .then(({ body }) => {
-          console.log(body); // prints an empty object initially, but when the app.use is added to app.js, it'll work and then can remove the console log
-          expect(body.msg).to.equal("Method not allowed!");
-        });
-    });
-  });
-  // 400 patch example
-  xdescribe("/houses", () => {
-    it("/PATCH /:house_id - status 400 responds bad request when given a malformed body", () => {
-      return request(app)
-        .patch("/api/houses/1")
-        .send({ house_points: null })
-        .then(({ body }) => {
-          expect(body.msg).to.equal("Bad request!");
-        });
-    });
-  });
-});
-//potentially usable tests for later?
-xit("/topics status 404 responds with 'Topic does not exist'", () => {
-  return request(app)
-    .get("/api/topics/not_a_topic")
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).to.equal("Topic does not exist");
-    });
-});
-xit("/topics status 400 responds with 'Invalid Format'", () => {
-  return request(app)
-    .get("/api/topics/1")
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).to.equal("Invalid Format");
-    });
-});
+//   // 405 example
+//   xdescribe("/houses", () => {
+//     it("ALL status:405 - responds with a method not allowed error", () => {
+//       return request(app)
+//         .put("/api/houses/1")
+//         .expect(405)
+//         .then(({ body }) => {
+//           console.log(body); // prints an empty object initially, but when the app.use is added to app.js, it'll work and then can remove the console log
+//           expect(body.msg).to.equal("Method not allowed!");
+//         });
+//     });
+//   });
+//   // 400 patch example
+//   xdescribe("/houses", () => {
+//     it("/PATCH /:house_id - status 400 responds bad request when given a malformed body", () => {
+//       return request(app)
+//         .patch("/api/houses/1")
+//         .send({ house_points: null })
+//         .then(({ body }) => {
+//           expect(body.msg).to.equal("Bad request!");
+//         });
+//     });
+//   });
+// });
+// //potentially usable tests for later?
+// xit("/topics status 404 responds with 'Topic does not exist'", () => {
+//   return request(app)
+//     .get("/api/topics/not_a_topic")
+//     .expect(404)
+//     .then(({ body }) => {
+//       expect(body.msg).to.equal("Topic does not exist");
+//     });
+// });
+// xit("/topics status 400 responds with 'Invalid Format'", () => {
+//   return request(app)
+//     .get("/api/topics/1")
+//     .expect(400)
+//     .then(({ body }) => {
+//       expect(body.msg).to.equal("Invalid Format");
+//     });
+// });
