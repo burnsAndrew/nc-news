@@ -59,15 +59,6 @@ describe.only("/", () => {
           });
         });
     });
-    xit("invalid method status 405", () => {
-      //need to revisit this
-      return request(app)
-        .delete("/api/topics/1")
-        .expect(405)
-        .then(res => {
-          expect(res.body.msg).to.equal("Method Not Allowed");
-        });
-    });
   });
 
   describe("/api/articles", () => {
@@ -173,15 +164,15 @@ describe.only("/", () => {
           expect(res.body.article).to.contain.key("article_id");
         });
     });
-    xit("/articles status 404 responds with 'Article does not exist'", () => {
+    xit("ERROR /articles status 400 responds with 'Article does not exist'", () => {
       return request(app)
-        .get("/api/articles/not_an_article")
-        .expect(404)
+        .get("/api/articles/99999")
+        .expect(400)
         .then(({ body }) => {
           expect(body.msg).to.equal("Article does not exist");
         });
     });
-    xit("/articles status 400 responds with 'Invalid Format'", () => {
+    xit("ERROR /articles status 400 responds with 'Invalid Format'", () => {
       return request(app)
         .get("/api/articles/abc")
         .expect(400)
@@ -293,7 +284,7 @@ describe.only("/", () => {
         .delete("/api/comments/1")
         .expect(204);
     });
-    xit("DELETE /:comment_id - status: 400 - responds with 'Invalid ID format'", () => {
+    xit("ERROR /:comment_id - status: 400 - responds with 'Invalid ID format'", () => {
       return request(app)
         .delete("/api/comments/invalid_id_format")
         .expect(400)
@@ -301,7 +292,7 @@ describe.only("/", () => {
           expect(body.msg).to.equal("Invalid ID format");
         });
     });
-    xit("DELETE /:comment_id - status: 404 - responds with 'Comment does not exist'", () => {
+    xit("ERROR /:comment_id - status: 404 - responds with 'Comment does not exist'", () => {
       return request(app)
         .delete("/api/comments/9999")
         .expect(404)
@@ -327,50 +318,3 @@ describe.only("/", () => {
     });
   });
 });
-
-//example of error handling by Tom
-// xdescribe("/api", () => {
-//   beforeEach(() => connection.seed.run());
-//   after(() => connection.destroy());
-
-//   // 405 example
-//   xdescribe("/houses", () => {
-//     it("ALL status:405 - responds with a method not allowed error", () => {
-//       return request(app)
-//         .put("/api/houses/1")
-//         .expect(405)
-//         .then(({ body }) => {
-//           console.log(body); // prints an empty object initially, but when the app.use is added to app.js, it'll work and then can remove the console log
-//           expect(body.msg).to.equal("Method not allowed!");
-//         });
-//     });
-//   });
-//   // 400 patch example
-//   xdescribe("/houses", () => {
-//     it("/PATCH /:house_id - status 400 responds bad request when given a malformed body", () => {
-//       return request(app)
-//         .patch("/api/houses/1")
-//         .send({ house_points: null })
-//         .then(({ body }) => {
-//           expect(body.msg).to.equal("Bad request!");
-//         });
-//     });
-//   });
-// });
-// //potentially usable tests for later?
-// xit("/topics status 404 responds with 'Topic does not exist'", () => {
-//   return request(app)
-//     .get("/api/topics/not_a_topic")
-//     .expect(404)
-//     .then(({ body }) => {
-//       expect(body.msg).to.equal("Topic does not exist");
-//     });
-// });
-// xit("/topics status 400 responds with 'Invalid Format'", () => {
-//   return request(app)
-//     .get("/api/topics/1")
-//     .expect(400)
-//     .then(({ body }) => {
-//       expect(body.msg).to.equal("Invalid Format");
-//     });
-// });

@@ -7,6 +7,15 @@ exports.methodNotAllowed = (req, res, next) => {
 };
 
 exports.handle500 = (err, req, res, next) => {
-  console.log(err);
   res.status(500).send({ msg: "Internal Server Error" });
+};
+
+exports.handle400 = (err, req, res, next) => {
+  const codes = {
+    "22P02": "Invalid format",
+    code2: "msg2",
+    code3: "msg3"
+  };
+  if (codes[err.code]) res.status(400).send({ msg: codes[err.code] });
+  else next(err);
 };
