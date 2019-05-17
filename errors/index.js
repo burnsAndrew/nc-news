@@ -12,7 +12,7 @@ exports.handle500 = (err, req, res, next) => {
 
 exports.handle400 = (err, req, res, next) => {
   const codes = {
-    "22P02": "Invalid format",
+    "22P02": "Invalid Format",
     code2: "msg2",
     code3: "msg3"
   };

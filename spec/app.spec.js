@@ -23,8 +23,9 @@ describe.only("/", () => {
           expect(body.ok).to.eql(true);
         });
     });
+
     describe("/not_a_route", () => {
-      it("ANY status:404 - responds with a 'Route Not Found' error", () => {
+      it("ERROR status:404 - responds with a 'Route Not Found' error", () => {
         return request(app)
           .get("/api/not_a_route")
           .expect(404)
@@ -82,6 +83,7 @@ describe.only("/", () => {
           );
         });
     });
+
     it("GET status:200 and respond with an array of articles objects, with the property 'comment_count'", () => {
       return request(app)
         .get("/api/articles")
@@ -90,6 +92,7 @@ describe.only("/", () => {
           expect(res.body.articles[0]).to.contain.keys("comment_count");
         });
     });
+
     it("GET status:200 and respond with articles sorted by date as default", () => {
       return request(app)
         .get("/api/articles?sort_by=created_at&order=desc")
@@ -100,6 +103,7 @@ describe.only("/", () => {
           });
         });
     });
+
     it("GET status:200 and respond with articles sorted by author in ascending order", () => {
       return request(app)
         .get("/api/articles?sort_by=author&order=asc")
@@ -110,6 +114,7 @@ describe.only("/", () => {
           });
         });
     });
+
     it("GET status:200 and respond with articles that can be set to ascending or descending order, defaulted to descending order", () => {
       return request(app)
         .get("/api/articles?sort_by=author&order=desc")
@@ -120,6 +125,7 @@ describe.only("/", () => {
           });
         });
     });
+
     it("GET status:200 and respond with articles filtered by author", () => {
       return request(app)
         .get("/api/articles?author=butter_bridge")
@@ -131,6 +137,7 @@ describe.only("/", () => {
           expect(allByAuthor).to.be.true;
         });
     });
+
     it("GET status:200 and respond with articles filtered by topic", () => {
       return request(app)
         .get("/api/articles?topic=mitch")
@@ -145,7 +152,7 @@ describe.only("/", () => {
   });
 
   describe("/articles/:article_id", () => {
-    it("GET status 200 and respond with an article object with the appropriate properties", () => {
+    it("GET status:200 and respond with an article object with the appropriate properties", () => {
       return request(app)
         .get("/api/articles/3")
         .expect(200)
@@ -164,15 +171,17 @@ describe.only("/", () => {
           expect(res.body.article).to.contain.key("article_id");
         });
     });
-    xit("ERROR /articles status 400 responds with 'Article does not exist'", () => {
+
+    xit("ERROR status:400 responds with 'Article Does Not Exist'", () => {
       return request(app)
         .get("/api/articles/99999")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Article does not exist");
+          expect(body.msg).to.equal("Article Does Not Exist");
         });
     });
-    xit("ERROR /articles status 400 responds with 'Invalid Format'", () => {
+
+    xit("ERROR status:400 responds with 'Invalid Format'", () => {
       return request(app)
         .get("/api/articles/abc")
         .expect(400)
@@ -180,6 +189,7 @@ describe.only("/", () => {
           expect(body.msg).to.equal("Invalid Format");
         });
     });
+
     it("PATCH status 200 and respond with an updated article ", () => {
       const newVote = 1;
       const voteIncrementer = { inc_votes: newVote };
@@ -199,10 +209,20 @@ describe.only("/", () => {
           });
         });
     });
+
+    xit("ERROR status:400 responds bad request when given a malformed body", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ article_id: null })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Bad Request");
+        });
+    });
   });
 
   describe("/articles/:article_id/comments", () => {
-    it("GET status 200 and respond with an array of comments", () => {
+    it("GET status:200 and respond with an array of comments", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
@@ -216,6 +236,7 @@ describe.only("/", () => {
           );
         });
     });
+
     it("GET status:200 and respond with articles sorted by date as default", () => {
       return request(app)
         .get("/api/articles/1/comments?sort_by=created_at&order=desc")
@@ -226,6 +247,7 @@ describe.only("/", () => {
           });
         });
     });
+
     it("GET status:200 and respond with articles sorted by author in ascending order", () => {
       return request(app)
         .get("/api/articles/1/comments?sort_by=author&order=asc")
@@ -236,7 +258,8 @@ describe.only("/", () => {
           });
         });
     });
-    it("POST status 201 and responds with a successfully posted comment", () => {
+
+    it("POST status:201 and responds with a successfully posted comment", () => {
       const newComment = {
         username: "butter_bridge",
         body:
@@ -260,7 +283,7 @@ describe.only("/", () => {
   });
 
   describe("/comments/:comment_id", () => {
-    it("PATCH status 200 and responds with a successfully updated comment", () => {
+    it("PATCH status:200 and responds with a successfully updated comment", () => {
       const newVote = 1;
       const voteIncrementer = { inc_votes: newVote };
       return request(app)
@@ -279,31 +302,34 @@ describe.only("/", () => {
           });
         });
     });
-    it("DELETE status 204 and responds with no content, as it has been successfully deleted", () => {
+
+    it("DELETE status:204 and responds with no content, as it has been successfully deleted", () => {
       return request(app)
         .delete("/api/comments/1")
         .expect(204);
     });
-    xit("ERROR /:comment_id - status: 400 - responds with 'Invalid ID format'", () => {
+
+    xit("ERROR status:400 - responds with 'Invalid Format'", () => {
       return request(app)
-        .delete("/api/comments/invalid_id_format")
+        .delete("/api/comments/invalid_format")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Invalid ID format");
+          expect(body.msg).to.equal("Invalid Format");
         });
     });
-    xit("ERROR /:comment_id - status: 404 - responds with 'Comment does not exist'", () => {
+
+    xit("ERROR status:404 - responds with 'Route Not Found'", () => {
       return request(app)
         .delete("/api/comments/9999")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Comment does not exist");
+          expect(body.msg).to.equal("Route Not Found");
         });
     });
   });
 
   describe("/users/:username", () => {
-    it("GET status 200 and responds with a user object", () => {
+    it("GET status:200 and responds with a user object", () => {
       return request(app)
         .get("/api/users/butter_bridge")
         .expect(200)
@@ -314,6 +340,14 @@ describe.only("/", () => {
             avatar_url:
               "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
           });
+        });
+    });
+    xit("ERROR status:404 - responds with 'Route Not Found'", () => {
+      return request(app)
+        .delete("/api/users/9999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Route Not Found");
         });
     });
   });
