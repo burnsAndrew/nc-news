@@ -39,7 +39,8 @@ exports.seed = (connection, Promise) => {
         "created_by",
         "author"
       );
-      const refLookUp = createRef(articleRows, "article_id", "title");
+      const refLookUp = createRef(articleRows, "title", "article_id");
+
       const updatedCommentsData = formatData(formatAuthor, refLookUp);
       return connection("comments")
         .insert(updatedCommentsData)

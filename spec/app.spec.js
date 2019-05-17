@@ -23,13 +23,13 @@ describe.only("/", () => {
           expect(body.ok).to.eql(true);
         });
     });
-    xdescribe("/not_a_route", () => {
+    describe("/not_a_route", () => {
       it("ANY status:404 - responds with a 'Route Not Found' error", () => {
         return request(app)
           .get("/api/not_a_route")
           .expect(404)
-          .then(({ body }) => {
-            expect(body.msg).to.eql("Route Not Found");
+          .then(res => {
+            expect(res.body.msg).to.eql("Route Not Found");
           });
       });
     });
@@ -60,11 +60,12 @@ describe.only("/", () => {
         });
     });
     xit("invalid method status 405", () => {
+      //need to revisit this
       return request(app)
-        .put("/api/topics/invalid_method")
+        .delete("/api/topics/1")
         .expect(405)
-        .then(({ body }) => {
-          expect(body.msg).to.equal("Method Not Allowed");
+        .then(res => {
+          expect(res.body.msg).to.equal("Method Not Allowed");
         });
     });
   });
@@ -215,19 +216,18 @@ describe.only("/", () => {
         .get("/api/articles/1/comments")
         .expect(200)
         .then(res => {
-          expect(res.body.article.comments).to.contain.keys(
+          expect(res.body.comments[0]).to.contain.keys(
             "comment_id",
             "votes",
             "created_at",
             "author",
             "body"
           );
-          expect(res.body.article.author).to.be.a("string");
         });
     });
-    xit("GET status:200 and respond with articles sorted by date as default", () => {
+    it("GET status:200 and respond with articles sorted by date as default", () => {
       return request(app)
-        .get("/api/articles/:article_id/comments?sort_by=created_at&order=desc")
+        .get("/api/articles/1/comments?sort_by=created_at&order=desc")
         .expect(200)
         .then(res => {
           expect(res.body.comments).to.be.descendingBy("created_at", {
@@ -235,9 +235,9 @@ describe.only("/", () => {
           });
         });
     });
-    xit("GET status:200 and respond with articles sorted by author in ascending order", () => {
+    it("GET status:200 and respond with articles sorted by author in ascending order", () => {
       return request(app)
-        .get("/api/articles/:article_id/comments?sort_by=author&order=asc")
+        .get("/api/articles/1/comments?sort_by=author&order=asc")
         .expect(200)
         .then(res => {
           expect(res.body.comments).to.be.ascendingBy("author", {
@@ -250,7 +250,7 @@ describe.only("/", () => {
         .post("/api/articles/1/comments")
         .expect(200)
         .then();
-      //continue
+      //continue - might need nchelp for this
     });
   });
 

@@ -19,9 +19,10 @@ exports.sendArticlesById = (req, res, next) => {
 };
 
 exports.sendCommentsByArticleId = (req, res, next) => {
-  const { article_id } = req.params;
-  selectCommentsByArticleId(article_id)
-    .then(comments => res.status(200).send({ comments }))
+  selectCommentsByArticleId(req.params, req.query)
+    .then(comments => {
+      res.status(200).send({ comments });
+    })
     .catch(next);
 };
 
@@ -33,7 +34,7 @@ exports.updateArticleVoteScore = (req, res, next) => {
     .catch(next);
 };
 
-exports.sendComment = (req, res, next) => {
+exports.postComment = (req, res, next) => {
   selectComment()
     .then(comment => res.status(201).send({ comment }))
     .catch(next);

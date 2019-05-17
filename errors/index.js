@@ -1,14 +1,12 @@
-exports.routeNotFound = (err, req, res) => {
+exports.routeNotFound = (req, res) => {
   res
     .status(404)
     .send({ msg: "Route Not Found" })
     .next(err);
 };
 
-exports.methodNotAllowed = (err, req, res, next) => {
-  if (err.status) {
-    res.status(405).send({ msg: "Method Not Allowed" });
-  } else next(err);
+exports.methodNotAllowed = (req, res, next) => {
+  res.status(405).send({ msg: "Method Not Allowed" });
 };
 
 exports.handle500 = (err, req, res, next) => {

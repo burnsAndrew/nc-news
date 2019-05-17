@@ -53,8 +53,10 @@ exports.patchArticleVoteScore = (article_id, inc_votes) => {
     .returning("*");
 };
 
-exports.selectCommentsByArticleId = article_id => {
-  //need to have a think about this bit
+exports.selectCommentsByArticleId = (
+  { article_id },
+  { sort_by = "created_at", order = "desc" }
+) => {
   return connection
     .select(
       "comments.comment_id",
@@ -63,5 +65,8 @@ exports.selectCommentsByArticleId = article_id => {
       "comments.author",
       "comments.body"
     )
-    .from("");
+    .from("comments")
+    .where("comments.article_id", "=", article_id)
+    .orderBy(sort_by, order)
+    .returning("*");
 };
