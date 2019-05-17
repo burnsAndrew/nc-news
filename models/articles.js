@@ -70,3 +70,11 @@ exports.selectCommentsByArticleId = (
     .orderBy(sort_by, order)
     .returning("*");
 };
+
+exports.writeComment = newComment => {
+  newComment.author = newComment.username;
+  delete newComment.username;
+  return connection("comments")
+    .insert(newComment)
+    .returning("*");
+};

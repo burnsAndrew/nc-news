@@ -2,13 +2,16 @@ const {
   selectArticles,
   selectArticlesById,
   patchArticleVoteScore,
-  selectCommentsByArticleId
+  selectCommentsByArticleId,
+  writeComment
 } = require("../models/articles");
 
 exports.sendArticles = (req, res, next) => {
-  selectArticles(req.query).then(articles => {
-    res.status(200).send({ articles });
-  });
+  selectArticles(req.query)
+    .then(articles => {
+      res.status(200).send({ articles });
+    })
+    .catch(next);
 };
 
 exports.sendArticlesById = (req, res, next) => {
@@ -35,7 +38,7 @@ exports.updateArticleVoteScore = (req, res, next) => {
 };
 
 exports.postComment = (req, res, next) => {
-  selectComment()
-    .then(comment => res.status(201).send({ comment }))
+  writeComment({ ...req.params, ...req.body })
+    .then(([comment]) => res.status(201).send({ comment }))
     .catch(next);
 };

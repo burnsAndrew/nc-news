@@ -210,7 +210,7 @@ describe.only("/", () => {
     });
   });
 
-  describe.only("/articles/:article_id/comments", () => {
+  describe("/articles/:article_id/comments", () => {
     it("GET status 200 and respond with an array of comments", () => {
       return request(app)
         .get("/api/articles/1/comments")
@@ -245,12 +245,26 @@ describe.only("/", () => {
           });
         });
     });
-    xit("POST status 200 and responds with a successfully posted comment", () => {
+    it("POST status 201 and responds with a successfully posted comment", () => {
+      const newComment = {
+        username: "butter_bridge",
+        body:
+          "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem.Voluptatem accusantium eius error adipisci quibusdam doloribus."
+      };
       return request(app)
         .post("/api/articles/1/comments")
-        .expect(200)
-        .then();
-      //continue - might need nchelp for this
+        .send(newComment)
+        .expect(201)
+        .then(res => {
+          expect(res.body.comment).to.have.keys(
+            "article_id",
+            "author",
+            "body",
+            "comment_id",
+            "created_at",
+            "votes"
+          );
+        });
     });
   });
 
@@ -266,7 +280,7 @@ describe.only("/", () => {
           expect(res.body.comment).to.eql({
             comment_id: 1,
             author: "butter_bridge",
-            article_id: null,
+            article_id: 9,
             votes: 17,
             created_at: "2017-11-22T00:00:00.000Z",
             body:

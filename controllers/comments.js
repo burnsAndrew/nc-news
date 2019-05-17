@@ -19,7 +19,5 @@ exports.removeCommentByCommentId = (req, res, next) => {
         return Promise.reject({ code: 404, msg: "Comment does not exist" });
       else res.sendStatus(204);
     })
-    .catch(err => {
-      next(err);
-    });
+    .catch(next);
 };
