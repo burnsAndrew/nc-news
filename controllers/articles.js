@@ -9,6 +9,9 @@ const {
 exports.sendArticles = (req, res, next) => {
   selectArticles(req.query)
     .then(articles => {
+      //if statement for err
+      // ***
+      //else
       res.status(200).send({ articles });
     })
     .catch(next);
@@ -17,13 +20,19 @@ exports.sendArticles = (req, res, next) => {
 exports.sendArticlesById = (req, res, next) => {
   const { article_id } = req.params;
   selectArticlesById(article_id)
-    .then(([article]) => res.status(200).send({ article }))
+    .then(([article]) => {
+      res.status(200).send({ article });
+    })
+
     .catch(next);
 };
 
 exports.sendCommentsByArticleId = (req, res, next) => {
   selectCommentsByArticleId(req.params, req.query)
     .then(comments => {
+      //if statement for err
+      // ***
+      //else
       res.status(200).send({ comments });
     })
     .catch(next);
@@ -39,6 +48,11 @@ exports.updateArticleVoteScore = (req, res, next) => {
 
 exports.postComment = (req, res, next) => {
   writeComment({ ...req.params, ...req.body })
-    .then(([comment]) => res.status(201).send({ comment }))
+    .then(([comment]) =>
+      //if statement for err
+      // ***
+      // else
+      res.status(201).send({ comment })
+    )
     .catch(next);
 };

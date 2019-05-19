@@ -149,6 +149,83 @@ describe.only("/", () => {
           expect(allByTopic).to.be.true;
         });
     });
+
+    xit("ERROR status:404 - responds with 'Topic does not exist'", () => {
+      return request(app)
+        .get("/api/articles/?topic=not_a_topic")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Topic does not exist");
+        });
+    });
+
+    xit("ERROR status:404 - responds with 'Author does not exist'", () => {
+      return request(app)
+        .get("/api/articles/?author=not_an_author")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Author does not exist");
+        });
+    });
+
+    xit("ERROR status:400 - responds with 'Invalid request'", () => {
+      return request(app)
+        .get("/api/articles/?sort_by=not_a_column")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Invalid request");
+        });
+    });
+
+    xit("ERROR status:404 - responds with 'Article Not Found'", () => {
+      return request(app)
+        .get("/api/articles/1000")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Article Not Found");
+        });
+    });
+
+    xit("ERROR status:400 - responds with 'Bad Request'", () => {
+      return request(app)
+        .get("/api/articles/dog")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Bad Request");
+        });
+    });
+
+    it("PATCH status:200 - responds with unchanged article", () => {
+      const newVote = 0;
+      const voteIncrementer = { inc_votes: newVote };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(voteIncrementer)
+        .expect(200)
+        .then(res => {
+          expect(res.body.article).to.eql({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            body: "I find this existence challenging",
+            votes: 100,
+            topic: "mitch",
+            author: "butter_bridge",
+            created_at: "2018-11-15T00:00:00.000Z"
+          });
+        });
+    });
+
+    xit("ERROR status:400 - responds with 'Bad Request'", () => {
+      const newVote = 2;
+      const voteIncrementer = { inc_votes: newVote };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(voteIncrementer)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Bad Request");
+        });
+    });
   });
 
   describe("/articles/:article_id", () => {
@@ -169,24 +246,6 @@ describe.only("/", () => {
           });
           expect(res.body.article).to.contain.key("author");
           expect(res.body.article).to.contain.key("article_id");
-        });
-    });
-
-    xit("ERROR status:400 responds with 'Article Does Not Exist'", () => {
-      return request(app)
-        .get("/api/articles/99999")
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).to.equal("Article Does Not Exist");
-        });
-    });
-
-    xit("ERROR status:400 responds with 'Invalid Format'", () => {
-      return request(app)
-        .get("/api/articles/abc")
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).to.equal("Invalid Format");
         });
     });
 
@@ -211,9 +270,11 @@ describe.only("/", () => {
     });
 
     xit("ERROR status:400 responds bad request when given a malformed body", () => {
-      return request(app)
+      const newVote = 1;
+      const voteIncrementer = { inc_votes: newVote };
+      request(app)
         .patch("/api/articles/1")
-        .send({ article_id: null })
+        .send(voteIncrementer)
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).to.equal("Bad Request");
@@ -280,6 +341,60 @@ describe.only("/", () => {
           );
         });
     });
+
+    xit("ERROR status:404 - responds with 'Article ID Does Not Exist'", () => {
+      return request(app)
+        .get("/api/articles/1000/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Article ID Does Not Exist");
+        });
+    });
+
+    xit("ERROR status:400 - responds with 'Bad Request'", () => {
+      return request(app)
+        .get("/api/articles/invalid_id/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Bad Request");
+        });
+    });
+
+    xit("ERROR status:400 - responds with 'Bad Request'", () => {
+      return request(app)
+        .get("/api/articles/1/comments?sort_by=invalid_column")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Bad Request");
+        });
+    });
+
+    xit("ERROR status:400 - responds with 'Bad Request'", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Bad Request");
+        });
+    });
+
+    xit("ERROR status:404 - responds with 'Article Not Found'", () => {
+      return request(app)
+        .post("/api/articles/1000/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Article Not Found");
+        });
+    });
+
+    xit("ERROR status:400 - responds with 'Bad Request'", () => {
+      return request(app)
+        .post("/api/articles/invalid_id/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Bad Request");
+        });
+    });
   });
 
   describe("/comments/:comment_id", () => {
@@ -309,21 +424,63 @@ describe.only("/", () => {
         .expect(204);
     });
 
-    xit("ERROR status:400 - responds with 'Invalid Format'", () => {
+    it("ERROR status:400 - responds with 'Bad Request'", () => {
+      const newVote = 2;
+      const voteIncrementer = { inc_votes: newVote };
       return request(app)
-        .delete("/api/comments/invalid_format")
+        .patch("/api/comments/1")
+        .send(voteIncrementer)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Bad Request");
+        });
+    });
+
+    xit("ERROR status:404 - responds with 'Comment Not Found'", () => {
+      return request(app)
+        .patch("/api/comments/10000")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Comment Not Found");
+        });
+    });
+
+    it("ERROR status:400 - responds with 'Invalid Format'", () => {
+      return request(app)
+        .patch("/api/comments/invalid_id")
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).to.equal("Invalid Format");
         });
     });
 
-    xit("ERROR status:404 - responds with 'Route Not Found'", () => {
+    it("ERROR status:400 - responds with 'Bad Request'", () => {
+      const newVote = 2;
+      const voteIncrementer = { inc_votes: newVote };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(voteIncrementer)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Bad Request");
+        });
+    });
+
+    it("ERROR status:404 - responds with 'Comment does not exist'", () => {
       return request(app)
         .delete("/api/comments/9999")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Route Not Found");
+          expect(body.msg).to.equal("Comment does not exist");
+        });
+    });
+
+    it("ERROR status:400 - responds with 'Invalid Format'", () => {
+      return request(app)
+        .delete("/api/comments/abc")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Invalid Format");
         });
     });
   });
@@ -342,12 +499,22 @@ describe.only("/", () => {
           });
         });
     });
-    xit("ERROR status:404 - responds with 'Route Not Found'", () => {
+
+    it("ERROR status:404 - responds with 'Invalid Username'", () => {
       return request(app)
-        .delete("/api/users/9999")
+        .get("/api/users/not_a_username")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Route Not Found");
+          expect(body.msg).to.equal("Invalid Username");
+        });
+    });
+
+    it("ERROR status:405 - responds with 'Method Not Allowed'", () => {
+      return request(app)
+        .delete("/api/users/9999")
+        .expect(405)
+        .then(({ body }) => {
+          expect(body.msg).to.equal("Method Not Allowed");
         });
     });
   });
