@@ -282,7 +282,7 @@ describe.only("/", () => {
     });
   });
 
-  describe("/articles/:article_id/comments", () => {
+  describe.only("/articles/:article_id/comments", () => {
     it("GET status:200 and respond with an array of comments", () => {
       return request(app)
         .get("/api/articles/1/comments")
@@ -383,7 +383,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:404 - responds with 'Page Not Found'", () => {
+    it("ERROR status:400 - responds with 'Page Not Found'", () => {
       const newComment = {
         username: "butter_bridge",
         body:
@@ -392,7 +392,7 @@ describe.only("/", () => {
       return request(app)
         .post("/api/articles/1000/comments")
         .send(newComment)
-        .expect(404)
+        .expect(400)
         .then(({ body }) => {
           expect(body.msg).to.equal("Page Not Found");
         });

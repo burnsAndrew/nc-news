@@ -58,8 +58,6 @@ exports.updateArticleVoteScore = (req, res, next) => {
 exports.postComment = (req, res, next) => {
   writeComment({ ...req.params, ...req.body })
     .then(([comment]) => {
-      console.log(comment);
-
       if (!comment.author)
         return Promise.reject({ status: 400, msg: "Bad Request" });
       else res.status(201).send({ comment });
