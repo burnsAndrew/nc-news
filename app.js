@@ -10,8 +10,8 @@ app.use("/api", apiRouter);
 
 app.all("/*", routeNotFound);
 
-app.use(handle500);
 app.use(handle400);
 app.use(handle404);
+app.use(handle500);
 
 module.exports = app;

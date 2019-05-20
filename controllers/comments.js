@@ -8,9 +8,12 @@ exports.updateCommentVoteScore = (req, res, next) => {
   const { inc_votes } = req.body;
   amendCommentVoteScore(comment_id, inc_votes)
     .then(([comment]) => {
-      if (inc_votes !== 1) res.status(400).send({ msg: "Bad Request" });
-      else if (!comment_id) res.status(404).send({ msg: "Comment Not Found" });
-      else res.status(200).send({ comment });
+      if (inc_votes > 1) res.status(400).send({ msg: "Bad Request" });
+      else if (!comment) {
+        res.status(404).send({ msg: "Comment Not Found" });
+      } else {
+        res.status(200).send({ comment });
+      }
     })
     .catch(next);
 };

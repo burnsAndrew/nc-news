@@ -150,48 +150,48 @@ describe.only("/", () => {
         });
     });
 
-    xit("ERROR status:404 - responds with 'Topic does not exist'", () => {
+    it("ERROR status:404 - responds with 'Page Not Found'", () => {
       return request(app)
         .get("/api/articles/?topic=not_a_topic")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Topic does not exist");
+          expect(body.msg).to.equal("Page Not Found");
         });
     });
 
-    xit("ERROR status:404 - responds with 'Author does not exist'", () => {
+    it("ERROR status:404 - responds with 'Page Not Found'", () => {
       return request(app)
         .get("/api/articles/?author=not_an_author")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Author does not exist");
+          expect(body.msg).to.equal("Page Not Found");
         });
     });
 
-    xit("ERROR status:400 - responds with 'Invalid request'", () => {
+    it("ERROR status:400 - responds with 'Invalid Request'", () => {
       return request(app)
         .get("/api/articles/?sort_by=not_a_column")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Invalid request");
+          expect(body.msg).to.equal("Invalid Request");
         });
     });
 
-    xit("ERROR status:404 - responds with 'Article Not Found'", () => {
+    it("ERROR status:404 - responds with 'Page Not Found'", () => {
       return request(app)
-        .get("/api/articles/1000")
+        .get("/api/articles/10000")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Article Not Found");
+          expect(body.msg).to.equal("Page Not Found");
         });
     });
 
-    xit("ERROR status:400 - responds with 'Bad Request'", () => {
+    it("ERROR status:400 - responds with 'Invalid Format'", () => {
       return request(app)
         .get("/api/articles/dog")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Bad Request");
+          expect(body.msg).to.equal("Invalid Format");
         });
     });
 
@@ -215,7 +215,7 @@ describe.only("/", () => {
         });
     });
 
-    xit("ERROR status:400 - responds with 'Bad Request'", () => {
+    it("ERROR status:400 - responds with 'Bad Request'", () => {
       const newVote = 2;
       const voteIncrementer = { inc_votes: newVote };
       return request(app)
@@ -269,8 +269,8 @@ describe.only("/", () => {
         });
     });
 
-    xit("ERROR status:400 responds bad request when given a malformed body", () => {
-      const newVote = 1;
+    it("ERROR status:400 responds with 'Bad Request' when given a malformed body", () => {
+      const newVote = 2;
       const voteIncrementer = { inc_votes: newVote };
       request(app)
         .patch("/api/articles/1")
@@ -342,57 +342,74 @@ describe.only("/", () => {
         });
     });
 
-    xit("ERROR status:404 - responds with 'Article ID Does Not Exist'", () => {
+    it("ERROR status:404 - responds with 'Page Not Found'", () => {
       return request(app)
-        .get("/api/articles/1000/comments")
+        .get("/api/articles/10000/comments")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Article ID Does Not Exist");
+          expect(body.msg).to.equal("Page Not Found");
         });
     });
 
-    xit("ERROR status:400 - responds with 'Bad Request'", () => {
+    it("ERROR status:400 - responds with 'Invalid Format'", () => {
       return request(app)
         .get("/api/articles/invalid_id/comments")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Bad Request");
+          expect(body.msg).to.equal("Invalid Format");
         });
     });
 
-    xit("ERROR status:400 - responds with 'Bad Request'", () => {
+    it("ERROR status:400 - responds with 'Invalid Request'", () => {
       return request(app)
         .get("/api/articles/1/comments?sort_by=invalid_column")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Bad Request");
+          expect(body.msg).to.equal("Invalid Request");
         });
     });
 
-    xit("ERROR status:400 - responds with 'Bad Request'", () => {
+    it("ERROR status:400 - responds with 'Bad Request'", () => {
+      const newComment = {
+        body:
+          "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem.Voluptatem accusantium eius error adipisci quibusdam doloribus."
+      };
       return request(app)
         .post("/api/articles/1/comments")
+        .send(newComment)
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).to.equal("Bad Request");
         });
     });
 
-    xit("ERROR status:404 - responds with 'Article Not Found'", () => {
+    it("ERROR status:404 - responds with 'Page Not Found'", () => {
+      const newComment = {
+        username: "butter_bridge",
+        body:
+          "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem.Voluptatem accusantium eius error adipisci quibusdam doloribus."
+      };
       return request(app)
         .post("/api/articles/1000/comments")
+        .send(newComment)
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Article Not Found");
+          expect(body.msg).to.equal("Page Not Found");
         });
     });
 
-    xit("ERROR status:400 - responds with 'Bad Request'", () => {
+    it("ERROR status:400 - responds with 'Invalid Format'", () => {
+      const newComment = {
+        username: "butter_bridge",
+        body:
+          "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem.Voluptatem accusantium eius error adipisci quibusdam doloribus."
+      };
       return request(app)
         .post("/api/articles/invalid_id/comments")
-        .expect(404)
+        .send(newComment)
+        .expect(400)
         .then(({ body }) => {
-          expect(body.msg).to.equal("Bad Request");
+          expect(body.msg).to.equal("Invalid Format");
         });
     });
   });
@@ -436,9 +453,12 @@ describe.only("/", () => {
         });
     });
 
-    xit("ERROR status:404 - responds with 'Comment Not Found'", () => {
+    it("ERROR status:404 - responds with 'Comment Not Found'", () => {
+      const newVote = 1;
+      const voteIncrementer = { inc_votes: newVote };
       return request(app)
         .patch("/api/comments/10000")
+        .send(voteIncrementer)
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).to.equal("Comment Not Found");

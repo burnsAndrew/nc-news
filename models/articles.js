@@ -78,3 +78,7 @@ exports.writeComment = newComment => {
     .insert(newComment)
     .returning("*");
 };
+
+exports.authorExists = () => {};
+
+exports.topicExists = () => {};
