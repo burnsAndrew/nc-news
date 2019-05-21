@@ -35,7 +35,7 @@ exports.sendArticlesById = (req, res, next) => {
 exports.sendCommentsByArticleId = (req, res, next) => {
   selectCommentsByArticleId(req.params, req.query)
     .then(comments => {
-      if (comments.length === 0) {
+      if (!comments) {
         return Promise.reject({ status: 404, msg: "Page Not Found" });
       } else {
         res.status(200).send({ comments });

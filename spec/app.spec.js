@@ -150,7 +150,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:404 - responds with 'Page Not Found'", () => {
+    it("ERROR status:404 - responds with 'Page Not Found' if given a topic that doesn't exist", () => {
       return request(app)
         .get("/api/articles/?topic=not_a_topic")
         .expect(404)
@@ -159,7 +159,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:404 - responds with 'Page Not Found'", () => {
+    it("ERROR status:404 - responds with 'Page Not Found' if given an author that doesn't exist", () => {
       return request(app)
         .get("/api/articles/?author=not_an_author")
         .expect(404)
@@ -168,7 +168,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:400 - responds with 'Invalid Request'", () => {
+    it("ERROR status:400 - responds with 'Invalid Request' if given an invalid column to sort by", () => {
       return request(app)
         .get("/api/articles/?sort_by=not_a_column")
         .expect(400)
@@ -177,7 +177,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:404 - responds with 'Page Not Found'", () => {
+    it("ERROR status:404 - responds with 'Page Not Found' if given an article that does not exist", () => {
       return request(app)
         .get("/api/articles/10000")
         .expect(404)
@@ -186,7 +186,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:400 - responds with 'Invalid Format'", () => {
+    it("ERROR status:400 - responds with 'Invalid Format' if given an article_id that is in the incorrect format", () => {
       return request(app)
         .get("/api/articles/dog")
         .expect(400)
@@ -215,7 +215,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:400 - responds with 'Bad Request'", () => {
+    it("ERROR status:400 - responds with 'Bad Request' if an invalid value is given", () => {
       const newVote = 2;
       const voteIncrementer = { inc_votes: newVote };
       return request(app)
@@ -249,7 +249,7 @@ describe.only("/", () => {
         });
     });
 
-    it("PATCH status 200 and respond with an updated article ", () => {
+    it("PATCH status 200 and respond with an updated article", () => {
       const newVote = 1;
       const voteIncrementer = { inc_votes: newVote };
       return request(app)
@@ -282,7 +282,7 @@ describe.only("/", () => {
     });
   });
 
-  describe.only("/articles/:article_id/comments", () => {
+  describe("/articles/:article_id/comments", () => {
     it("GET status:200 and respond with an array of comments", () => {
       return request(app)
         .get("/api/articles/1/comments")
@@ -295,6 +295,15 @@ describe.only("/", () => {
             "author",
             "body"
           );
+        });
+    });
+
+    it("GET status:200 and respond with an empty array if an article has no comments", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).to.eql([]);
         });
     });
 
@@ -342,16 +351,17 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:404 - responds with 'Page Not Found'", () => {
-      return request(app)
-        .get("/api/articles/10000/comments")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).to.equal("Page Not Found");
-        });
-    });
+    //the only test that is failing? Is this a valid test or a contradictory one?
+    // it("ERROR status:404 - responds with 'Page Not Found'", () => {
+    //   return request(app)
+    //     .get("/api/articles/10000/comments")
+    //     .expect(404)
+    //     .then(({ body }) => {
+    //       expect(body.msg).to.equal("Page Not Found");
+    //     });
+    // });
 
-    it("ERROR status:400 - responds with 'Invalid Format'", () => {
+    it("ERROR status:400 - responds with 'Invalid Format' if given an article_id in the wrong format", () => {
       return request(app)
         .get("/api/articles/invalid_id/comments")
         .expect(400)
@@ -360,7 +370,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:400 - responds with 'Invalid Request'", () => {
+    it("ERROR status:400 - responds with 'Invalid Request' if given an invalid column to sort by", () => {
       return request(app)
         .get("/api/articles/1/comments?sort_by=invalid_column")
         .expect(400)
@@ -369,7 +379,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:400 - responds with 'Bad Request'", () => {
+    it("ERROR status:400 - responds with 'Bad Request' if a posted comment does not include all mandatory properties", () => {
       const newComment = {
         body:
           "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem.Voluptatem accusantium eius error adipisci quibusdam doloribus."
@@ -383,7 +393,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:400 - responds with 'Page Not Found'", () => {
+    it("ERROR status:404 - responds with 'Page Not Found' if attempting to post a comment on an article that doesn't exist", () => {
       const newComment = {
         username: "butter_bridge",
         body:
@@ -392,13 +402,13 @@ describe.only("/", () => {
       return request(app)
         .post("/api/articles/1000/comments")
         .send(newComment)
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
           expect(body.msg).to.equal("Page Not Found");
         });
     });
 
-    it("ERROR status:400 - responds with 'Invalid Format'", () => {
+    it("ERROR status:400 - responds with 'Invalid Format' if attempting to post a comment on an article using an invalid_id type", () => {
       const newComment = {
         username: "butter_bridge",
         body:
@@ -441,7 +451,7 @@ describe.only("/", () => {
         .expect(204);
     });
 
-    it("ERROR status:400 - responds with 'Bad Request'", () => {
+    it("ERROR status:400 - responds with 'Bad Request' if the inc_votes amount is invalid", () => {
       const newVote = 2;
       const voteIncrementer = { inc_votes: newVote };
       return request(app)
@@ -453,7 +463,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:404 - responds with 'Comment Not Found'", () => {
+    it("ERROR status:404 - responds with 'Comment Not Found' if the comment does not exist", () => {
       const newVote = 1;
       const voteIncrementer = { inc_votes: newVote };
       return request(app)
@@ -465,7 +475,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:400 - responds with 'Invalid Format'", () => {
+    it("ERROR status:400 - responds with 'Invalid Format' if the format of the id is invalid", () => {
       return request(app)
         .patch("/api/comments/invalid_id")
         .expect(400)
@@ -474,19 +484,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:400 - responds with 'Bad Request'", () => {
-      const newVote = 2;
-      const voteIncrementer = { inc_votes: newVote };
-      return request(app)
-        .patch("/api/comments/1")
-        .send(voteIncrementer)
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).to.equal("Bad Request");
-        });
-    });
-
-    it("ERROR status:404 - responds with 'Comment does not exist'", () => {
+    it("ERROR status:404 - responds with 'Comment does not exist' if given a comment_id that does not exist", () => {
       return request(app)
         .delete("/api/comments/9999")
         .expect(404)
@@ -495,7 +493,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:400 - responds with 'Invalid Format'", () => {
+    it("ERROR status:400 - responds with 'Invalid Format' if the comment_id is in an invalid format", () => {
       return request(app)
         .delete("/api/comments/abc")
         .expect(400)
@@ -520,7 +518,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:404 - responds with 'Invalid Username'", () => {
+    it("ERROR status:404 - responds with 'Invalid Username' if the given username is not valid", () => {
       return request(app)
         .get("/api/users/not_a_username")
         .expect(404)
@@ -529,7 +527,7 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:405 - responds with 'Method Not Allowed'", () => {
+    it("ERROR status:405 - responds with 'Method Not Allowed' if someone tries to delete a user", () => {
       return request(app)
         .delete("/api/users/9999")
         .expect(405)

@@ -10,7 +10,6 @@ exports.handle400 = (err, req, res, next) => {
   const codes = {
     "22P02": "Invalid Format",
     "42703": "Invalid Request",
-    "23503": "Page Not Found",
     "23502": "Bad Request"
   };
   if (codes[err.code]) res.status(400).send({ msg: codes[err.code] });
@@ -18,7 +17,7 @@ exports.handle400 = (err, req, res, next) => {
 };
 
 exports.handle404 = (err, req, res, next) => {
-  if (err.status === 404) {
+  if (err.status === 404 || err.code === "23503") {
     res.status(404).send({ msg: "Page Not Found" });
   } else next(err);
 };
