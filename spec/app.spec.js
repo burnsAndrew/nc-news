@@ -24,17 +24,6 @@ describe.only("/", () => {
         });
     });
 
-    xit("GET status:200 and a JSON describing all available endpoints", () => {
-      return request(app)
-        .get("/api")
-        .expect(200)
-        .then(({ body }) => {
-          console.log(body);
-          // expect(body /*something*/).to.eql(/*JSON*/);
-          // will need to add logic at api.js or possibly create a new router. At present, the body is just OK: true.
-        });
-    });
-
     describe("/not_a_route", () => {
       it("ERROR status:404 - responds with a 'Route Not Found' error", () => {
         return request(app)
