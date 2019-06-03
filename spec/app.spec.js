@@ -15,12 +15,23 @@ describe.only("/", () => {
   after(() => connection.destroy());
 
   describe("/api", () => {
-    it("GET status:200 and an 'ok: true' response", () => {
+    it("GET status:200 and return the endpoints as a json", () => {
       return request(app)
         .get("/api")
         .expect(200)
         .then(({ body }) => {
-          expect(body.ok).to.eql(true);
+          expect(body).to.contain.keys(
+            "DELETE /api/comments/:comment_id",
+            "GET /api",
+            "GET /api/articles",
+            "GET /api/articles/:article_id",
+            "GET /api/articles/:article_id/comments",
+            "GET /api/topics",
+            "GET /api/users/:username",
+            "PATCH /api/articles/:article_id",
+            "PATCH /api/comments/:comment_id",
+            "POST /api/articles/:article_id/comments"
+          );
         });
     });
 

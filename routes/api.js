@@ -4,6 +4,7 @@ const commentsRouter = require("./comments-router");
 const topicsRouter = require("./topics-router");
 const usersRouter = require("./users-router");
 const { methodNotAllowed } = require("../errors");
+const endpoints = require("../endpoints.json");
 
 apiRouter.use("/articles", articlesRouter);
 apiRouter.use("/comments", commentsRouter);
@@ -12,7 +13,7 @@ apiRouter.use("/users", usersRouter);
 
 apiRouter
   .route("/")
-  .get((req, res) => res.send({ ok: true }))
+  .get((req, res) => res.send(endpoints))
   .all(methodNotAllowed);
 
 module.exports = apiRouter;
