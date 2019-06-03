@@ -161,6 +161,24 @@ describe.only("/", () => {
         });
     });
 
+    // xit("GET status:200 and respond with articles with pagination features of 10 articles per page", () => {
+    //   return request(app)
+    //     .get("/api/articles")
+    //     .expect(200)
+    //     .then(res => {
+    //       expect(res.body.articles).to.equal(10);
+    //     });
+    // });
+
+    // xit("GET status:200 and respond with an array of articles objects, with the property 'total_count'", () => {
+    //   return request(app)
+    //     .get("/api/articles")
+    //     .expect(200)
+    //     .then(res => {
+    //       expect(res.body.articles).to.contain.keys("total_count");
+    //     });
+    // });
+
     it("ERROR status:404 - responds with 'Page Not Found' if given a topic that doesn't exist", () => {
       return request(app)
         .get("/api/articles/?topic=not_a_topic")
@@ -361,6 +379,15 @@ describe.only("/", () => {
           );
         });
     });
+
+    // xit("GET status:200 and respond with article comments limited to 10 per page, as per pagination settings", () => {
+    //   return request(app)
+    //     .get("/api/articles/:article_id/comments")
+    //     .expect(200)
+    //     .then(res => {
+    //       expect(res.body.articles).to.equal(10);
+    //     });
+    // });
 
     //the only test that is failing? Is this a valid test or a contradictory one?
     // it("ERROR status:404 - responds with 'Page Not Found'", () => {

@@ -4,8 +4,8 @@ const development = require("./dev-data");
 const test = require("./test-data");
 
 const data = {
-  development,
   test,
+  development,
   production: development
 };
 
