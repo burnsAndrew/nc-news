@@ -3,7 +3,8 @@ const {
   selectArticlesById,
   patchArticleVoteScore,
   selectCommentsByArticleId,
-  writeComment
+  writeComment,
+  deleteArticleByArticleId
 } = require("../models/articles");
 
 exports.sendArticles = (req, res, next) => {
@@ -61,6 +62,16 @@ exports.postComment = (req, res, next) => {
       if (!comment.author)
         return Promise.reject({ status: 400, msg: "Bad Request" });
       else res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.removeArticleByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  deleteArticleByArticleId(article_id)
+    .then(result => {
+      if (result === 0) res.status(404).send({ msg: "Article does not exist" });
+      else res.sendStatus(204);
     })
     .catch(next);
 };

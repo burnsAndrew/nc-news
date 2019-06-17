@@ -6,3 +6,7 @@ exports.selectUsers = ({ username }) => {
     .from("users")
     .where("users.username", "=", username);
 };
+
+exports.selectAllUsers = () => {
+  return connection.select("*").from("users");
+};

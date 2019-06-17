@@ -4,7 +4,8 @@ const {
   sendArticlesById,
   updateArticleVoteScore,
   sendCommentsByArticleId,
-  postComment
+  postComment,
+  removeArticleByArticleId
 } = require("../controllers/articles");
 const { methodNotAllowed } = require("../errors/index");
 
@@ -16,6 +17,7 @@ articlesRouter
   .route("/:article_id")
   .get(sendArticlesById)
   .patch(updateArticleVoteScore)
+  .delete(removeArticleByArticleId)
   .all(methodNotAllowed);
 articlesRouter
   .route("/:article_id/comments")

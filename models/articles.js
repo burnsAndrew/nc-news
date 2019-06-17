@@ -79,6 +79,11 @@ exports.writeComment = newComment => {
     .returning("*");
 };
 
-exports.authorExists = () => {};
+exports.deleteArticleByArticleId = article_id => {
+  return connection("articles")
+    .where("article_id", "=", article_id)
+    .del();
+};
 
-exports.topicExists = () => {};
+// exports.authorExists = () => {};
+// exports.topicExists = () => {};

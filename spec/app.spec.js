@@ -15,22 +15,27 @@ describe.only("/", () => {
   after(() => connection.destroy());
 
   describe("/api", () => {
-    it("GET status:200 and return the endpoints as a json", () => {
+    it("GET status:200 - return the endpoints as a json", () => {
       return request(app)
         .get("/api")
         .expect(200)
         .then(({ body }) => {
           expect(body).to.contain.keys(
             "DELETE /api/comments/:comment_id",
+            /*"DELETE /api/articles", */
             "GET /api",
             "GET /api/articles",
             "GET /api/articles/:article_id",
             "GET /api/articles/:article_id/comments",
             "GET /api/topics",
+            /*"GET /api/users", */
             "GET /api/users/:username",
             "PATCH /api/articles/:article_id",
             "PATCH /api/comments/:comment_id",
             "POST /api/articles/:article_id/comments"
+            /*"POST /api/users", */
+            /*"POST /api/topics", */
+            /*"POST /api/articles", */
           );
         });
     });
@@ -48,33 +53,32 @@ describe.only("/", () => {
   });
 
   describe("/api/topics", () => {
-    it("GET status:200 and respond with an array of topic objects, each with slug and description properties", () => {
+    it("GET status:200 - responds with an array of topic objects, each with slug and description properties", () => {
       return request(app)
         .get("/api/topics")
         .expect(200)
         .then(({ body }) => {
-          expect(body).to.eql({
-            topics: [
-              {
-                description: "The man, the Mitch, the legend",
-                slug: "mitch"
-              },
-              {
-                description: "Not dogs",
-                slug: "cats"
-              },
-              {
-                description: "what books are made of",
-                slug: "paper"
-              }
-            ]
-          });
+          expect(body.topics[0]).to.contain.keys("description", "slug");
         });
     });
+
+    // it("POST status: 201 - responds with a successfully posted topic", () => {
+    //   const newTopic = {
+    //     slug: "rugby",
+    //     description: "it's like football, but with different shaped balls"
+    //   };
+    //   return request(app)
+    //     .post("/api/topics")
+    //     .send(newTopic)
+    //     .expect(201)
+    //     .then(res => {
+    //       expect(res.body.topics).to.have.keys("description", "slug");
+    //     });
+    // });
   });
 
   describe("/api/articles", () => {
-    it("GET status:200 and respond with an array of articles objects, with specific properties", () => {
+    it("GET status:200 - responds with an array of articles objects, with specific properties", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
@@ -95,7 +99,7 @@ describe.only("/", () => {
         });
     });
 
-    it("GET status:200 and respond with an array of articles objects, with the property 'comment_count'", () => {
+    it("GET status:200 - responds with an array of articles objects, with the property 'comment_count'", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
@@ -104,7 +108,7 @@ describe.only("/", () => {
         });
     });
 
-    it("GET status:200 and respond with articles sorted by date as default", () => {
+    it("GET status:200 - responds with articles sorted by date as default", () => {
       return request(app)
         .get("/api/articles?sort_by=created_at&order=desc")
         .expect(200)
@@ -115,7 +119,7 @@ describe.only("/", () => {
         });
     });
 
-    it("GET status:200 and respond with articles sorted by author in ascending order", () => {
+    it("GET status:200 - responds with articles sorted by author in ascending order", () => {
       return request(app)
         .get("/api/articles?sort_by=author&order=asc")
         .expect(200)
@@ -126,7 +130,7 @@ describe.only("/", () => {
         });
     });
 
-    it("GET status:200 and respond with articles that can be set to ascending or descending order, defaulted to descending order", () => {
+    it("GET status:200 - responds with articles that can be set to ascending or descending order, defaulted to descending order", () => {
       return request(app)
         .get("/api/articles?sort_by=author&order=desc")
         .expect(200)
@@ -137,7 +141,7 @@ describe.only("/", () => {
         });
     });
 
-    it("GET status:200 and respond with articles filtered by author", () => {
+    it("GET status:200 - responds with articles filtered by author", () => {
       return request(app)
         .get("/api/articles?author=butter_bridge")
         .expect(200)
@@ -149,7 +153,7 @@ describe.only("/", () => {
         });
     });
 
-    it("GET status:200 and respond with articles filtered by topic", () => {
+    it("GET status:200 - responds with articles filtered by topic", () => {
       return request(app)
         .get("/api/articles?topic=mitch")
         .expect(200)
@@ -161,7 +165,7 @@ describe.only("/", () => {
         });
     });
 
-    // xit("GET status:200 and respond with articles with pagination features of 10 articles per page", () => {
+    // xit("GET status:200 - responds with articles with pagination features of 10 articles per page", () => {
     //   return request(app)
     //     .get("/api/articles")
     //     .expect(200)
@@ -170,12 +174,37 @@ describe.only("/", () => {
     //     });
     // });
 
-    // xit("GET status:200 and respond with an array of articles objects, with the property 'total_count'", () => {
+    // xit("GET status:200 - responds with an array of articles objects, with the property 'total_count'", () => {
     //   return request(app)
     //     .get("/api/articles")
     //     .expect(200)
     //     .then(res => {
     //       expect(res.body.articles).to.contain.keys("total_count");
+    //     });
+    // });
+
+    // it("POST status:201 - responds with a successfully posted article", () => {
+    //   const newArticle = {
+    //     author: "a",
+    //     title: "a",
+    //     article_id: "a",
+    //     topic: "a",
+    //     create_at: "a",
+    //     votes: "a."
+    //   };
+    //   return request(app)
+    //     .post("/api/articles")
+    //     .send(newArticle)
+    //     .expect(201)
+    //     .then(res => {
+    //       expect(res.body.article).to.have.keys(
+    //         "author",
+    //         "title",
+    //         "article_id",
+    //         "topic",
+    //         "created_at",
+    //         "votes"
+    //       );
     //     });
     // });
 
@@ -258,7 +287,7 @@ describe.only("/", () => {
   });
 
   describe("/articles/:article_id", () => {
-    it("GET status:200 and respond with an article object with the appropriate properties", () => {
+    it("GET status:200 - responds with an article object with the appropriate properties", () => {
       return request(app)
         .get("/api/articles/3")
         .expect(200)
@@ -278,7 +307,7 @@ describe.only("/", () => {
         });
     });
 
-    it("PATCH status 200 and respond with an updated article", () => {
+    it("PATCH status 200 - responds with an updated article", () => {
       const newVote = 1;
       const voteIncrementer = { inc_votes: newVote };
       return request(app)
@@ -298,7 +327,13 @@ describe.only("/", () => {
         });
     });
 
-    it("ERROR status:400 responds with 'Bad Request' when given a malformed body", () => {
+    it("DELETE status:204 - responds with no content, as it has been successfully deleted", () => {
+      return request(app)
+        .delete("/api/articles/2")
+        .expect(204);
+    });
+
+    it("ERROR status:400 - responds with 'Bad Request' when given a malformed body", () => {
       const newVote = 2;
       const voteIncrementer = { inc_votes: newVote };
       request(app)
@@ -312,7 +347,7 @@ describe.only("/", () => {
   });
 
   describe("/articles/:article_id/comments", () => {
-    it("GET status:200 and respond with an array of comments", () => {
+    it("GET status:200 - responds with an array of comments", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
@@ -327,7 +362,7 @@ describe.only("/", () => {
         });
     });
 
-    it("GET status:200 and respond with an empty array if an article has no comments", () => {
+    it("GET status:200 - responds with an empty array if an article has no comments", () => {
       return request(app)
         .get("/api/articles/2/comments")
         .expect(200)
@@ -336,7 +371,7 @@ describe.only("/", () => {
         });
     });
 
-    it("GET status:200 and respond with articles sorted by date as default", () => {
+    it("GET status:200 - responds with articles sorted by date as default", () => {
       return request(app)
         .get("/api/articles/1/comments?sort_by=created_at&order=desc")
         .expect(200)
@@ -347,7 +382,7 @@ describe.only("/", () => {
         });
     });
 
-    it("GET status:200 and respond with articles sorted by author in ascending order", () => {
+    it("GET status:200 - responds with articles sorted by author in ascending order", () => {
       return request(app)
         .get("/api/articles/1/comments?sort_by=author&order=asc")
         .expect(200)
@@ -358,7 +393,7 @@ describe.only("/", () => {
         });
     });
 
-    it("POST status:201 and responds with a successfully posted comment", () => {
+    it("POST status:201 - responds with a successfully posted comment", () => {
       const newComment = {
         username: "butter_bridge",
         body:
@@ -380,22 +415,12 @@ describe.only("/", () => {
         });
     });
 
-    // xit("GET status:200 and respond with article comments limited to 10 per page, as per pagination settings", () => {
+    // xit("GET status:200 - responds with article comments limited to 10 per page, as per pagination settings", () => {
     //   return request(app)
     //     .get("/api/articles/:article_id/comments")
     //     .expect(200)
     //     .then(res => {
     //       expect(res.body.articles).to.equal(10);
-    //     });
-    // });
-
-    //the only test that is failing? Is this a valid test or a contradictory one?
-    // it("ERROR status:404 - responds with 'Page Not Found'", () => {
-    //   return request(app)
-    //     .get("/api/articles/10000/comments")
-    //     .expect(404)
-    //     .then(({ body }) => {
-    //       expect(body.msg).to.equal("Page Not Found");
     //     });
     // });
 
@@ -463,7 +488,7 @@ describe.only("/", () => {
   });
 
   describe("/comments/:comment_id", () => {
-    it("PATCH status:200 and responds with a successfully updated comment", () => {
+    it("PATCH status:200 - responds with a successfully updated comment", () => {
       const newVote = 1;
       const voteIncrementer = { inc_votes: newVote };
       return request(app)
@@ -483,7 +508,7 @@ describe.only("/", () => {
         });
     });
 
-    it("DELETE status:204 and responds with no content, as it has been successfully deleted", () => {
+    it("DELETE status:204 - responds with no content, as it has been successfully deleted", () => {
       return request(app)
         .delete("/api/comments/1")
         .expect(204);
@@ -542,7 +567,7 @@ describe.only("/", () => {
   });
 
   describe("/users/:username", () => {
-    it("GET status:200 and responds with a user object", () => {
+    it("GET status:200 - responds with a user object", () => {
       return request(app)
         .get("/api/users/butter_bridge")
         .expect(200)
@@ -574,4 +599,34 @@ describe.only("/", () => {
         });
     });
   });
+
+  describe("/users", () => {
+    it("GET status:200 - responds with an object of users, each with username, name and avatar_url properties", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.users[0]).to.contain.keys(
+            "username",
+            "name",
+            "avatar_url"
+          );
+        });
+    });
+  });
+
+  //   it("POST status:201 - responds with a successfully posted user", () => {
+  //     const newUser = {
+  //       username: "andrew",
+  //       name: "andrew burns",
+  //       avatar_url: "tbc"
+  //     };
+  //     return request(app)
+  //       .post("/api/users")
+  //       .send(newUser)
+  //       .expect(201)
+  //       .then(res => {
+  //         expect(res.body.user).to.have.keys("username", "name", "avatar_url");
+  //       });
+  //   });
 });
