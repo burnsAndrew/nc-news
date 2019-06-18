@@ -21,21 +21,21 @@ describe.only("/", () => {
         .expect(200)
         .then(({ body }) => {
           expect(body).to.contain.keys(
-            "DELETE /api/comments/:comment_id",
-            /*"DELETE /api/articles", */
             "GET /api",
             "GET /api/articles",
+            "POST /api/articles",
             "GET /api/articles/:article_id",
+            "DELETE /api/articles/:article_id",
             "GET /api/articles/:article_id/comments",
             "GET /api/topics",
-            /*"GET /api/users", */
+            "POST /api/topics",
+            "GET /api/users",
+            "POST /api/users",
             "GET /api/users/:username",
             "PATCH /api/articles/:article_id",
             "PATCH /api/comments/:comment_id",
+            "DELETE /api/comments/:comment_id",
             "POST /api/articles/:article_id/comments"
-            /*"POST /api/users", */
-            /*"POST /api/topics", */
-            /*"POST /api/articles", */
           );
         });
     });
