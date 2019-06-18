@@ -85,5 +85,8 @@ exports.deleteArticleByArticleId = article_id => {
     .del();
 };
 
-// exports.authorExists = () => {};
-// exports.topicExists = () => {};
+exports.writeArticle = newArticle => {
+  return connection("articles")
+    .insert(newArticle)
+    .returning("*");
+};

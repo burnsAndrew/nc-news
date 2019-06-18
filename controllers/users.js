@@ -1,4 +1,4 @@
-const { selectUsers, selectAllUsers } = require("../models/users");
+const { selectUsers, selectAllUsers, writeUser } = require("../models/users");
 
 exports.sendAllUsers = (req, res, next) => {
   selectAllUsers()
@@ -14,6 +14,14 @@ exports.sendUsers = (req, res, next) => {
     .then(([user]) => {
       if (!user) res.status(404).send({ msg: "Invalid Username" });
       else res.status(200).send({ user });
+    })
+    .catch(next);
+};
+
+exports.postUser = (req, res, next) => {
+  writeUser({ ...req.params, ...req.body })
+    .then(([user]) => {
+      res.status(201).send({ user });
     })
     .catch(next);
 };

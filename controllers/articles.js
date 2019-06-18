@@ -4,7 +4,8 @@ const {
   patchArticleVoteScore,
   selectCommentsByArticleId,
   writeComment,
-  deleteArticleByArticleId
+  deleteArticleByArticleId,
+  writeArticle
 } = require("../models/articles");
 
 exports.sendArticles = (req, res, next) => {
@@ -72,6 +73,14 @@ exports.removeArticleByArticleId = (req, res, next) => {
     .then(result => {
       if (result === 0) res.status(404).send({ msg: "Article does not exist" });
       else res.sendStatus(204);
+    })
+    .catch(next);
+};
+
+exports.postArticle = (req, res, next) => {
+  writeArticle({ ...req.params, ...req.body })
+    .then(([article]) => {
+      res.status(201).send({ article });
     })
     .catch(next);
 };

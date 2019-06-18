@@ -62,19 +62,19 @@ describe.only("/", () => {
         });
     });
 
-    // it("POST status: 201 - responds with a successfully posted topic", () => {
-    //   const newTopic = {
-    //     slug: "rugby",
-    //     description: "it's like football, but with different shaped balls"
-    //   };
-    //   return request(app)
-    //     .post("/api/topics")
-    //     .send(newTopic)
-    //     .expect(201)
-    //     .then(res => {
-    //       expect(res.body.topics).to.have.keys("description", "slug");
-    //     });
-    // });
+    it("POST status: 201 - responds with a successfully posted topic", () => {
+      const newTopic = {
+        slug: "rugby",
+        description: "it's like football, but with different shaped balls"
+      };
+      return request(app)
+        .post("/api/topics")
+        .send(newTopic)
+        .expect(201)
+        .then(res => {
+          expect(res.body.topic).to.have.keys("description", "slug");
+        });
+    });
   });
 
   describe("/api/articles", () => {
@@ -183,30 +183,30 @@ describe.only("/", () => {
     //     });
     // });
 
-    // it("POST status:201 - responds with a successfully posted article", () => {
-    //   const newArticle = {
-    //     author: "a",
-    //     title: "a",
-    //     article_id: "a",
-    //     topic: "a",
-    //     create_at: "a",
-    //     votes: "a."
-    //   };
-    //   return request(app)
-    //     .post("/api/articles")
-    //     .send(newArticle)
-    //     .expect(201)
-    //     .then(res => {
-    //       expect(res.body.article).to.have.keys(
-    //         "author",
-    //         "title",
-    //         "article_id",
-    //         "topic",
-    //         "created_at",
-    //         "votes"
-    //       );
-    //     });
-    // });
+    it("POST status:201 - responds with a successfully posted article", () => {
+      const newArticle = {
+        author: "butter_bridge",
+        title: "is it a barm or a muffin?",
+        topic: "mitch",
+        body:
+          "The age-old question: what should we call the thing that holds your bacon in the morning?  Is it a muffin?  Surely not - they have blueberries in them.  Is it a roll?  It can't be, can it?  Swap your bacon for sausage and you have a sausage roll... but that's not a sausage roll, is it?  Yes, it's a barm. Case closed."
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(newArticle)
+        .expect(201)
+        .then(res => {
+          expect(res.body.article).to.have.keys(
+            "author",
+            "title",
+            "article_id",
+            "body",
+            "topic",
+            "created_at",
+            "votes"
+          );
+        });
+    });
 
     it("ERROR status:404 - responds with 'Page Not Found' if given a topic that doesn't exist", () => {
       return request(app)
@@ -615,18 +615,18 @@ describe.only("/", () => {
     });
   });
 
-  //   it("POST status:201 - responds with a successfully posted user", () => {
-  //     const newUser = {
-  //       username: "andrew",
-  //       name: "andrew burns",
-  //       avatar_url: "tbc"
-  //     };
-  //     return request(app)
-  //       .post("/api/users")
-  //       .send(newUser)
-  //       .expect(201)
-  //       .then(res => {
-  //         expect(res.body.user).to.have.keys("username", "name", "avatar_url");
-  //       });
-  //   });
+  it("POST status:201 - responds with a successfully posted user", () => {
+    const newUser = {
+      username: "andrew",
+      name: "andrew burns",
+      avatar_url: "tbc"
+    };
+    return request(app)
+      .post("/api/users")
+      .send(newUser)
+      .expect(201)
+      .then(res => {
+        expect(res.body.user).to.have.keys("username", "name", "avatar_url");
+      });
+  });
 });

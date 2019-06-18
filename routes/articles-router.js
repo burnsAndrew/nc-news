@@ -5,13 +5,15 @@ const {
   updateArticleVoteScore,
   sendCommentsByArticleId,
   postComment,
-  removeArticleByArticleId
+  removeArticleByArticleId,
+  postArticle
 } = require("../controllers/articles");
 const { methodNotAllowed } = require("../errors/index");
 
 articlesRouter
   .route("/")
   .get(sendArticles)
+  .post(postArticle)
   .all(methodNotAllowed);
 articlesRouter
   .route("/:article_id")

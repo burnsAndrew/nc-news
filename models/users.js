@@ -10,3 +10,9 @@ exports.selectUsers = ({ username }) => {
 exports.selectAllUsers = () => {
   return connection.select("*").from("users");
 };
+
+exports.writeUser = newUser => {
+  return connection("users")
+    .insert(newUser)
+    .returning("*");
+};
