@@ -165,14 +165,23 @@ describe.only("/", () => {
         });
     });
 
-    // xit("GET status:200 - responds with articles with pagination features of 10 articles per page", () => {
-    //   return request(app)
-    //     .get("/api/articles")
-    //     .expect(200)
-    //     .then(res => {
-    //       expect(res.body.articles).to.equal(10);
-    //     });
-    // });
+    it("GET status:200 - responds with articles with pagination features of 10 articles per page", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(res => {
+          expect(res.body.articles.length).to.equal(10);
+        });
+    });
+
+    it("GET status:200 - responds with articles with pagination features of 5 articles per page and a successful page query response of page 2", () => {
+      return request(app)
+        .get("/api/articles?limit=5&p=2")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).to.equal(5);
+        });
+    });
 
     // xit("GET status:200 - responds with an array of articles objects, with the property 'total_count'", () => {
     //   return request(app)
@@ -415,14 +424,23 @@ describe.only("/", () => {
         });
     });
 
-    // xit("GET status:200 - responds with article comments limited to 10 per page, as per pagination settings", () => {
-    //   return request(app)
-    //     .get("/api/articles/:article_id/comments")
-    //     .expect(200)
-    //     .then(res => {
-    //       expect(res.body.articles).to.equal(10);
-    //     });
-    // });
+    it("GET status:200 - responds with comments with pagination features of 10 articles per page", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(res => {
+          expect(res.body.comments.length).to.equal(10);
+        });
+    });
+
+    it("GET status:200 - responds with articles with pagination features of 5 articles per page and a successful page query response of page 2", () => {
+      return request(app)
+        .get("/api/articles/1/comments?limit=5&p=2")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments.length).to.equal(5);
+        });
+    });
 
     it("ERROR status:400 - responds with 'Invalid Format' if given an article_id in the wrong format", () => {
       return request(app)

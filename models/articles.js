@@ -3,6 +3,8 @@ const connection = require("../db/connection");
 exports.selectArticles = ({
   sort_by = "created_at",
   order = "desc",
+  limit = 10,
+  p = 1,
   author,
   topic
 }) => {
@@ -20,6 +22,8 @@ exports.selectArticles = ({
     .count("comment_id AS comment_count")
     .groupBy("articles.article_id")
     .orderBy(sort_by, order)
+    .limit(limit)
+    .offset((p - 1) * 5)
     .modify(query => {
       if (author) query.where("articles.author", "=", author);
     })
@@ -55,7 +59,7 @@ exports.patchArticleVoteScore = (article_id, inc_votes = 0) => {
 
 exports.selectCommentsByArticleId = (
   { article_id },
-  { sort_by = "created_at", order = "desc" }
+  { sort_by = "created_at", order = "desc", limit = 10, p = 1 }
 ) => {
   return connection
     .select(
@@ -68,6 +72,8 @@ exports.selectCommentsByArticleId = (
     .from("comments")
     .where("comments.article_id", "=", article_id)
     .orderBy(sort_by, order)
+    .limit(limit)
+    .offset((p - 1) * 5)
     .returning("*");
 };
 
