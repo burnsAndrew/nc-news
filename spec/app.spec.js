@@ -165,7 +165,7 @@ describe.only("/", () => {
         });
     });
 
-    it("GET status:200 - responds with articles with pagination features of 10 articles per page", () => {
+    it.only("GET status:200 - responds with articles with pagination features of 10 articles per page", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
@@ -174,7 +174,7 @@ describe.only("/", () => {
         });
     });
 
-    it("GET status:200 - responds with articles with pagination features of 5 articles per page and a successful page query response of page 2", () => {
+    it.only("GET status:200 - responds with articles with pagination features of 5 articles per page and a successful page query response of page 2", () => {
       return request(app)
         .get("/api/articles?limit=5&p=2")
         .expect(200)
@@ -424,7 +424,7 @@ describe.only("/", () => {
         });
     });
 
-    it("GET status:200 - responds with comments with pagination features of 10 articles per page", () => {
+    it.only("GET status:200 - responds with comments with pagination features of 10 articles per page", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
@@ -433,7 +433,7 @@ describe.only("/", () => {
         });
     });
 
-    it("GET status:200 - responds with articles with pagination features of 5 articles per page and a successful page query response of page 2", () => {
+    it.only("GET status:200 - responds with articles with pagination features of 5 articles per page and a successful page query response of page 2", () => {
       return request(app)
         .get("/api/articles/1/comments?limit=5&p=2")
         .expect(200)

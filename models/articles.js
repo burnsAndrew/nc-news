@@ -23,7 +23,7 @@ exports.selectArticles = ({
     .groupBy("articles.article_id")
     .orderBy(sort_by, order)
     .limit(limit)
-    .offset((p - 1) * 5)
+    .offset((p - 1) * limit)
     .modify(query => {
       if (author) query.where("articles.author", "=", author);
     })
@@ -73,7 +73,7 @@ exports.selectCommentsByArticleId = (
     .where("comments.article_id", "=", article_id)
     .orderBy(sort_by, order)
     .limit(limit)
-    .offset((p - 1) * 5)
+    .offset((p - 1) * limit)
     .returning("*");
 };
 
