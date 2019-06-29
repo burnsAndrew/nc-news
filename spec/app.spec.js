@@ -39,16 +39,16 @@ describe.only("/", () => {
           );
         });
     });
+  });
 
-    describe("/not_a_route", () => {
-      it("ERROR status:404 - responds with a 'Route Not Found' error", () => {
-        return request(app)
-          .get("/api/not_a_route")
-          .expect(404)
-          .then(res => {
-            expect(res.body.msg).to.eql("Route Not Found");
-          });
-      });
+  describe("/not_a_route", () => {
+    it("ERROR status:404 - responds with a 'Route Not Found' error", () => {
+      return request(app)
+        .get("/api/not_a_route")
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.eql("Route Not Found");
+        });
     });
   });
 
@@ -165,7 +165,7 @@ describe.only("/", () => {
         });
     });
 
-    it.only("GET status:200 - responds with articles with pagination features of 10 articles per page", () => {
+    it("GET status:200 - responds with articles with pagination features", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
@@ -174,7 +174,7 @@ describe.only("/", () => {
         });
     });
 
-    it.only("GET status:200 - responds with articles with pagination features of 5 articles per page and a successful page query response of page 2", () => {
+    it("GET status:200 - responds with articles with pagination features and a page query response", () => {
       return request(app)
         .get("/api/articles?limit=5&p=2")
         .expect(200)
@@ -183,12 +183,22 @@ describe.only("/", () => {
         });
     });
 
-    // xit("GET status:200 - responds with an array of articles objects, with the property 'total_count'", () => {
+    // it("GET status:200 - responds with a 'total_count' property and an array of articles objects", () => {
     //   return request(app)
     //     .get("/api/articles")
     //     .expect(200)
     //     .then(res => {
-    //       expect(res.body.articles).to.contain.keys("total_count");
+    //       console.log(res.body);
+    //       expect(res.body).to.contain.keys("total_count");
+    //     });
+    // });
+
+    // xit("GET status:200 - responds with an array of articles and total_count calculates after a filter is applied", () => {
+    //   return request(app)
+    //     .get("/api/articles")
+    //     .expect(200)
+    //     .then(res => {
+    //       expect(res.body.articles.total_count).to.eql(???); this needs working on!!!
     //     });
     // });
 
@@ -424,7 +434,7 @@ describe.only("/", () => {
         });
     });
 
-    it.only("GET status:200 - responds with comments with pagination features of 10 articles per page", () => {
+    it("GET status:200 - responds with comments with pagination features", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
@@ -433,7 +443,7 @@ describe.only("/", () => {
         });
     });
 
-    it.only("GET status:200 - responds with articles with pagination features of 5 articles per page and a successful page query response of page 2", () => {
+    it("GET status:200 - responds with articles with pagination features and a page query response ", () => {
       return request(app)
         .get("/api/articles/1/comments?limit=5&p=2")
         .expect(200)
@@ -441,6 +451,15 @@ describe.only("/", () => {
           expect(body.comments.length).to.equal(5);
         });
     });
+
+    // it.only("ERROR status:404 - responds with 'Page Not Found' if given an article_id that doesn't exist", () => {
+    //   return request(app)
+    //     .get("/api/articles/20000/comments")
+    //     .expect(404)
+    //     .then(({ body }) => {
+    //       expect(body.msg).to.eql("Page Not Found");
+    //     });
+    // });
 
     it("ERROR status:400 - responds with 'Invalid Format' if given an article_id in the wrong format", () => {
       return request(app)
@@ -631,20 +650,20 @@ describe.only("/", () => {
           );
         });
     });
-  });
 
-  it("POST status:201 - responds with a successfully posted user", () => {
-    const newUser = {
-      username: "andrew",
-      name: "andrew burns",
-      avatar_url: "tbc"
-    };
-    return request(app)
-      .post("/api/users")
-      .send(newUser)
-      .expect(201)
-      .then(res => {
-        expect(res.body.user).to.have.keys("username", "name", "avatar_url");
-      });
+    it("POST status:201 - responds with a successfully posted user", () => {
+      const newUser = {
+        username: "andrew",
+        name: "andrew burns",
+        avatar_url: "tbc"
+      };
+      return request(app)
+        .post("/api/users")
+        .send(newUser)
+        .expect(201)
+        .then(res => {
+          expect(res.body.user).to.have.keys("username", "name", "avatar_url");
+        });
+    });
   });
 });

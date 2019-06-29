@@ -11,7 +11,7 @@ const {
 exports.sendArticles = (req, res, next) => {
   selectArticles(req.query)
     .then(articles => {
-      if (articles.length === 0) {
+      if (!articles.length) {
         return Promise.reject({ status: 404, msg: "Page Not Found" });
       } else {
         res.status(200).send({ articles });

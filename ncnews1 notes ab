@@ -10,48 +10,6 @@ error codes -
 see website 'http cats' for lots of codes (humorous site)
 
 we use our judgement as to which code to use, but there are some best practice ones
-the point of the codes is a way of conveying to the client what has gone wrong and why
-
-404 examples - a request is made that is valid, but it doesn't exist.  EG house_id = 999 (but there are only 5 houses)
-- when the route doesn't exist
-
-when the route doesn't exist
-
-do the app.spec tdd first (see example with tom label)
-come up with a way to handle the error by adding to app.js...
-
-app.use('/*', (res, req, next) => {
-  res.status(404).send({msg: 'Route not found!'})
-})
-
-for a 405 error, we need to add it in the routers, eg comments.js routers
-
-// routes/houses.js
-
-eg houseRouter
-.route('/:house_id')
-.delete(deleteHouseById)
-.patch(patchHousePointsByHouseId)
-.all((req, res, next) => {
-  res.status(405).send({msg: 'Method not allowed!'});
-});
-
-for the 400 bad request, once the test is written, do this:
-
-exports.deleteHouseById = (req, res, next) => {
-  const {house_id } = req.params;
-  removeHouseById(house_id)
-  .then(result => {
-    res.sendStatus(204);
-  })
-  .catch(err => {
-    res.status(400).send({msg: 'Bad request!'});
-  });
-};
-...
-
-moving onto sql error codes so that we can send custom responses, rather than just 'bad request' all the time
-we can send 'invalid id type', or 'cannot send null' - we can use the wording in the actual errors coming back in the terminal
 
 ...
 Notes from thursday lecture at 11.30am
