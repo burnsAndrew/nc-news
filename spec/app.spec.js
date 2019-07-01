@@ -655,7 +655,8 @@ describe.only("/", () => {
       const newUser = {
         username: "andrew",
         name: "andrew burns",
-        avatar_url: "tbc"
+        avatar_url:
+          "/home/andrew/northcoders/back-end2/nc-news/avatars/lminventor.jpg"
       };
       return request(app)
         .post("/api/users")
