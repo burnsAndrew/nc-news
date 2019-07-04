@@ -17,13 +17,13 @@ const customConfigs = {
       database: "nc_news",
       username: "andrew",
       password: "password"
-    },
-    production: {
-      connection: `${DB_URL}?ssl=true`,
-      database: "nc_news",
-      username: "andrew",
-      password: "password"
     }
+  },
+  production: {
+    connection: `${DB_URL}?ssl=true`,
+    database: "nc_news",
+    username: "andrew",
+    password: "password"
   },
   test: {
     connection: {
