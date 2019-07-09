@@ -34,38 +34,38 @@ npm install
 
 3. For testing and developement, you will need to create a knexfile.js; please add to your .gitignore file.
 
-```
-const ENV = process.env.NODE_ENV || 'development';
+```js
+const ENV = process.env.NODE_ENV || "development";
 const { DB_URL } = process.env;
 
 const baseConfig = {
-  client: 'pg',
+  client: "pg",
   migrations: {
-    directory: './db/migrations',
+    directory: "./db/migrations"
   },
   seeds: {
-    directory: './db/seeds',
-  },
+    directory: "./db/seeds"
+  }
 };
 
 const customConfigs = {
   development: {
     connection: {
-      database: 'nc_news',
+      database: "nc_news"
       // username: "" << linux users only
       // password: "" << linux users only
-    },
+    }
   },
   test: {
     connection: {
-      database: 'nc_news_test',
+      database: "nc_news_test"
       // username: "", << linux users only
       // password: "", << linux users only
-    },
+    }
   },
   production: {
-    connection: `${DB_URL}?ssl=true`,
-  },
+    connection: `${DB_URL}?ssl=true`
+  }
 };
 
 module.exports = { ...baseConfig, ...customConfigs[ENV] };
