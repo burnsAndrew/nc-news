@@ -6,7 +6,8 @@ The back end, nc-news, utilises a RESTful API which allows access to a PSQL data
 
 The deployed API for the back end can be found here: https://ab-nc-news.herokuapp.com/api
 
-The deployed version of THE news app can be found here: NETLIFY LINK HERE
+The deployed version of THE news app can be found here: https://the-news.netlify.com/
+
 The github repo for the front end can be found here: https://github.com/burnsAndrew/the-news
 
 ## Getting Started
